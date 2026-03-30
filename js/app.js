@@ -280,9 +280,12 @@ const App = (() => {
       });
     });
 
-    // Pointage (tap to toggle present/absent)
-    list.querySelectorAll('.artist-card[data-artist]').forEach(card => {
-      card.addEventListener('click', () => togglePresence(card.dataset.artist));
+    // Pointage (tap checkbox to toggle present/absent)
+    list.querySelectorAll('.checkin-checkbox[data-checkin]').forEach(cb => {
+      cb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePresence(cb.dataset.checkin);
+      });
     });
   }
 
@@ -290,9 +293,11 @@ const App = (() => {
     const statusClass = a.present === true ? 'present' : a.present === false ? 'absent' : a.status || 'proposed';
     const statusLabel = a.present === true ? 'Present' : a.present === false ? 'Absent' :
       a.status === 'confirmed' ? 'Confirme' : a.status === 'declined' ? 'Decline' : 'En attente';
+    const isChecked = a.present === true;
 
     return `
       <div class="artist-card" data-artist="${a.name || ''}">
+        <div class="checkin-checkbox ${isChecked ? 'checked' : ''}" data-checkin="${a.name || ''}" title="Marquer present/absent">${isChecked ? '✓' : ''}</div>
         <div class="artist-order">${isRemplacant ? 'R' : a.order || '—'}</div>
         <div class="artist-info">
           <div class="artist-name">

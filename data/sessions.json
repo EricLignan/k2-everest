@@ -1,0 +1,96 @@
+{
+  "sessions": [
+    {
+      "date": "2026-02-18",
+      "jour": "mercredi",
+      "heure": "19h30",
+      "phase": "annule",
+      "artistes_count": 5,
+      "spectateurs": 0,
+      "chapeau": 0,
+      "parity_pct": 0,
+      "annulee": true,
+      "notes": "Bar exceptionnellement ferme"
+    },
+    {
+      "date": "2026-02-24",
+      "jour": "mardi",
+      "heure": "19h30",
+      "phase": "archive",
+      "artistes_count": 6,
+      "spectateurs": 18,
+      "chapeau": 45,
+      "parity_pct": 50,
+      "annulee": false,
+      "notes": "Lineup 50% parite (3F/3H)"
+    },
+    {
+      "date": "2026-03-10",
+      "jour": "mardi",
+      "heure": "19h30",
+      "phase": "archive",
+      "artistes_count": 10,
+      "spectateurs": 25,
+      "chapeau": 94,
+      "parity_pct": 30,
+      "annulee": false,
+      "notes": "10/10 artistes. Chapeau 94 EUR. Decale du mercredi (PSG)."
+    },
+    {
+      "date": "2026-03-25",
+      "jour": "mercredi",
+      "heure": "19h30",
+      "phase": "bilan",
+      "artistes_count": 12,
+      "spectateurs": 8,
+      "chapeau": 67,
+      "parity_pct": 8,
+      "annulee": false,
+      "mc": "Eddie CuDi",
+      "notes": "12 artistes presents (13 venus, 1 absent). Premiere session modele pull.",
+      "lineup": [
+        { "name": "Maxime Beaugendre", "instagram": "maxime_experimente", "genre": "H", "order": 1, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Stephane Dolbachian", "instagram": "Stef_stand", "genre": "H", "order": 2, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Eddie CuDi", "instagram": "eddiecudi", "genre": "H", "order": 3, "status": "confirmed", "is_mc": true, "primo": false },
+        { "name": "Maxime Farrayre", "instagram": null, "genre": "H", "order": 4, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Pierre Sabik", "instagram": "lejokari", "genre": "H", "order": 6, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Violaine de Pins", "instagram": null, "genre": "F", "order": 7, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Plante Aquatique", "instagram": null, "genre": "H", "order": 8, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Thibault Curatolo", "instagram": null, "genre": "H", "order": 9, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "JD", "instagram": "jd_sur_scene", "genre": "H", "order": 10, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Jakem", "instagram": "jakem.desso", "genre": "H", "order": 12, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Casimir Lissowski", "instagram": null, "genre": "H", "order": 13, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Helios", "instagram": null, "genre": "F", "order": 14, "status": "confirmed", "is_mc": false, "primo": true }
+      ],
+      "paiements": [
+        { "name": "Maxime Beaugendre", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Stephane Dolbachian", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Eddie CuDi", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Maxime Farrayre", "montant": 5.03, "mode": "lydia", "paye": true, "date_paiement": "2026-03-30" },
+        { "name": "Pierre Sabik", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Violaine de Pins", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Plante Aquatique", "montant": 5.03, "mode": "lydia", "paye": true, "date_paiement": "2026-03-30" },
+        { "name": "Thibault Curatolo", "montant": 5.03, "mode": "wero", "paye": false, "date_paiement": null },
+        { "name": "JD", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Jakem", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Casimir Lissowski", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
+        { "name": "Helios", "montant": 5.03, "mode": "virement", "paye": true, "date_paiement": "2026-03-29" }
+      ]
+    },
+    {
+      "date": "2026-04-08",
+      "jour": "mardi",
+      "heure": "19h30",
+      "phase": "init",
+      "artistes_count": 0,
+      "spectateurs": 0,
+      "chapeau": 0,
+      "parity_pct": 0,
+      "annulee": false,
+      "mc": null,
+      "notes": "Prochaine session a planifier",
+      "lineup": [],
+      "paiements": []
+    }
+  ]
+}

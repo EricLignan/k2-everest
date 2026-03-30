@@ -83,7 +83,7 @@ export async function onRequest(context) {
     }
 
     // --- Route dispatch ---
-    if (path === '/api/session') return handleSession(env);
+    if (path === '/api/session') return handleSession(env, url);
     if (path === '/api/lineup') return handleLineup(url, env);
     if (path === '/api/spectateurs') return handleSpectateurs(env);
     if (path === '/api/stats') return handleStats(env);
@@ -129,34 +129,105 @@ async function handleAuth(request, env) {
   return json({ token, role, expires: new Date(exp * 1000).toISOString() });
 }
 
+// ===== LOAD SESSIONS DATA =====
+async function loadSessions() {
+  const res = await fetch(new URL('/data/sessions.json', 'https://k2-everest.pages.dev'));
+  if (!res.ok) return { sessions: [] };
+  return res.json();
+}
+
+function findActiveSession(sessions) {
+  // Find the latest non-archive, non-annule session; fallback to latest
+  const active = sessions.filter(s => !['archive', 'annule'].includes(s.phase));
+  if (active.length > 0) return active[active.length - 1];
+  return sessions[sessions.length - 1];
+}
+
 // ===== SESSION =====
-async function handleSession(env) {
+async function handleSession(env, url) {
+  const data = await loadSessions();
+  const requestedDate = url?.searchParams?.get('date');
+  const session = requestedDate
+    ? data.sessions.find(s => s.date === requestedDate) || findActiveSession(data.sessions)
+    : findActiveSession(data.sessions);
+
+  if (!session) return json({ error: 'Aucune session trouvee', phase: 'init' });
+
+  const today = new Date();
+  const sessionDate = new Date(session.date + 'T00:00:00');
+  const jMinus = Math.ceil((sessionDate - today) / 86400000);
+
+  const lineup = session.lineup || [];
+  const confirmed = lineup.filter(a => a.status === 'confirmed');
+  const femmes = confirmed.filter(a => a.genre === 'F');
+  const primos = confirmed.filter(a => a.primo);
+
+  // Read checklist state from KV
+  const checklistStored = await env.K2_STATE.get(`checklist:${session.date}`);
+  const checklistItems = checklistStored ? JSON.parse(checklistStored) : DEFAULT_CHECKLIST;
+  const checklistDone = checklistItems.filter(i => i.done).length;
+
   return json({
-    date: '2026-04-08',
-    jour: 'mardi',
-    heure: '19h30',
-    phase: 'init',
-    j_minus: Math.ceil((new Date('2026-04-08') - new Date()) / 86400000),
-    mc: null,
-    lineup_count: 0,
+    date: session.date,
+    jour: session.jour,
+    heure: session.heure,
+    phase: session.phase,
+    j_minus: jMinus,
+    mc: session.mc || null,
+    lineup_count: confirmed.length,
     lineup_target: 10,
-    spectateurs_inscrits: 0,
-    parity_pct: 0,
-    primo_count: 0,
-    checklist: { done: 0, total: 12 },
-    actions: [
-      { id: 'dispos', label: 'Collecter les disponibilites', done: false },
-      { id: 'lineup', label: 'Selectionner le lineup', done: false },
-      { id: 'email_confirm', label: 'Envoyer email confirmation', done: false },
-    ],
+    spectateurs_inscrits: session.spectateurs || 0,
+    parity_pct: confirmed.length > 0 ? Math.round(femmes.length / confirmed.length * 100) : 0,
+    primo_count: primos.length,
+    checklist: { done: checklistDone, total: checklistItems.length },
+    actions: buildActions(session),
     last_updated: new Date().toISOString(),
   });
 }
 
+function buildActions(session) {
+  const actions = [];
+  if (!session.lineup?.length) actions.push({ id: 'dispos', label: 'Collecter les disponibilites', done: false });
+  if (!session.lineup?.length) actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: false });
+  else actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: true });
+  const emailSent = session.phase !== 'init' && session.phase !== 'dispos';
+  actions.push({ id: 'email_confirm', label: 'Envoyer email confirmation', done: emailSent });
+  return actions;
+}
+
 // ===== LINEUP =====
 async function handleLineup(url, env) {
-  const date = url.searchParams.get('date') || '2026-04-08';
-  return json({ date, artistes: [], remplacants: [], parity_pct: 0, confirmed_count: 0, target: 10 });
+  const data = await loadSessions();
+  const date = url.searchParams.get('date');
+  const session = date
+    ? data.sessions.find(s => s.date === date) || findActiveSession(data.sessions)
+    : findActiveSession(data.sessions);
+
+  if (!session) return json({ date, artistes: [], remplacants: [], parity_pct: 0, confirmed_count: 0, target: 10 });
+
+  const artistes = (session.lineup || []).map(a => ({
+    ...a,
+    dm_text: `Salut ${a.name} ! Tu es confirme(e) pour le Comedy Club Everest !\n${session.jour} ${session.date} a ${session.heure}\nL'Everest Bar Beaubourg\nPassage #${a.order}\nArrive vers 19h00 pour le briefing.\nA bientot !`,
+  }));
+
+  // Load pointage from KV
+  const pointageStored = await env.K2_STATE.get(`pointage:${session.date}`);
+  const pointage = pointageStored ? JSON.parse(pointageStored) : {};
+  artistes.forEach(a => {
+    if (pointage[a.name]) a.present = pointage[a.name].present;
+  });
+
+  const confirmed = artistes.filter(a => a.status === 'confirmed');
+  const femmes = confirmed.filter(a => a.genre === 'F');
+
+  return json({
+    date: session.date,
+    artistes,
+    remplacants: [],
+    parity_pct: confirmed.length > 0 ? Math.round(femmes.length / confirmed.length * 100) : 0,
+    confirmed_count: confirmed.length,
+    target: 10,
+  });
 }
 
 // ===== SPECTATEURS =====
@@ -166,10 +237,26 @@ async function handleSpectateurs(env) {
 
 // ===== STATS =====
 async function handleStats(env) {
-  return json({
-    sessions: [],
-    totals: { sessions_count: 0, avg_spectateurs: 0, avg_chapeau: 0, total_artistes_uniques: 0, trend_spectateurs_pct: 0, avg_parity: 0 },
-  });
+  const data = await loadSessions();
+  const validSessions = data.sessions.filter(s => !s.annulee && s.phase !== 'init');
+
+  const totals = {
+    sessions_count: validSessions.length,
+    avg_spectateurs: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.spectateurs || 0), 0) / validSessions.length) : 0,
+    avg_chapeau: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.chapeau || 0), 0) / validSessions.length) : 0,
+    avg_parity: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.parity_pct || 0), 0) / validSessions.length) : 0,
+    total_artistes_uniques: 28,
+    trend_spectateurs_pct: 0,
+  };
+
+  // Calculate trend (last vs previous)
+  if (validSessions.length >= 2) {
+    const last = validSessions[validSessions.length - 1].spectateurs || 0;
+    const prev = validSessions[validSessions.length - 2].spectateurs || 1;
+    totals.trend_spectateurs_pct = Math.round((last - prev) / prev * 100);
+  }
+
+  return json({ sessions: data.sessions, totals });
 }
 
 // ===== CHECKLIST =====
@@ -226,9 +313,16 @@ async function handleChapeau(request, env, payload) {
 
 // ===== PAIEMENTS =====
 async function handlePaiementsGet(url, env) {
-  const date = url.searchParams.get('date') || '2026-04-08';
+  const date = url.searchParams.get('date');
   const stored = await env.K2_STATE.get(`paiements:${date}`);
-  return json(stored ? JSON.parse(stored) : { artistes: [] });
+  if (stored) return json(JSON.parse(stored));
+
+  // Fallback: read from sessions.json
+  const data = await loadSessions();
+  const session = date
+    ? data.sessions.find(s => s.date === date) || findActiveSession(data.sessions)
+    : findActiveSession(data.sessions);
+  return json({ artistes: session?.paiements || [] });
 }
 
 async function handlePaiementsPost(request, env, payload) {

@@ -469,6 +469,28 @@ body {
 .status-present { background: var(--accent-green); color: white; }
 .status-absent { background: #6c757d; color: white; }
 
+/* Checkin checkbox */
+.checkin-checkbox {
+  width: 28px; height: 28px;
+  border: 2px solid var(--text-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.checkin-checkbox.checked {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: white;
+}
+
 .btn-copy-dm {
   background: none;
   border: 1px solid var(--border);
