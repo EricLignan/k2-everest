@@ -519,6 +519,22 @@ body {
   border-color: var(--accent-green);
   color: white;
 }
+.checkin-checkbox.readonly {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.closed-banner {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
 
 .btn-copy-dm {
   background: none;

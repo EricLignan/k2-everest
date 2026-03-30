@@ -231,10 +231,16 @@ const App = (() => {
     });
   }
 
+  // ===== HELPERS =====
+  function isSessionClosed(session) {
+    return ['bilan', 'archive', 'annule'].includes(session?.phase);
+  }
+
   // ===== RENDER: DASHBOARD =====
   function renderDashboard() {
     const s = state.session;
     if (!s) return;
+    const closed = isSessionClosed(s);
 
     const phaseEl = document.getElementById('session-phase');
     phaseEl.textContent = s.phase?.toUpperCase() || '—';
@@ -256,9 +262,11 @@ const App = (() => {
     document.getElementById('checklist-count').textContent = `${done}/${total}`;
     document.getElementById('checklist-fill').style.width = `${total > 0 ? (done / total * 100) : 0}%`;
 
-    // Actions
+    // Actions — figees si session terminee
     const actionsEl = document.getElementById('actions-items');
-    if (s.actions?.length) {
+    if (closed) {
+      actionsEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Session terminee — aucune action</p>';
+    } else if (s.actions?.length) {
       actionsEl.innerHTML = s.actions.map(a => `
         <div class="action-item">
           <div class="action-check ${a.done ? 'done' : ''}">${a.done ? '✓' : ''}</div>
@@ -275,10 +283,17 @@ const App = (() => {
     const l = state.lineup;
     if (!l) return;
 
+    const closed = isSessionClosed(state.session);
+
     document.getElementById('lineup-count').textContent = `${l.confirmed_count ?? 0}/${l.target ?? 10}`;
 
+    // For closed sessions, mark confirmed artists as present and hide declined
+    const artistes = closed
+      ? (l.artistes || []).filter(a => a.status !== 'declined' && a.status !== 'absent').map(a => ({ ...a, present: true }))
+      : (l.artistes || []);
+
     const list = document.getElementById('lineup-list');
-    list.innerHTML = (l.artistes || []).map(a => artistCard(a)).join('');
+    list.innerHTML = artistes.map(a => artistCard(a, false, closed)).join('');
 
     const remp = document.getElementById('lineup-remplacants');
     if (l.remplacants?.length) {
@@ -288,11 +303,17 @@ const App = (() => {
       remp.innerHTML = '';
     }
 
-    // Copy all DM button
-    document.getElementById('btn-copy-all-dm').onclick = () => {
-      const allDm = (l.artistes || []).filter(a => a.dm_text).map(a => a.dm_text).join('\n---\n');
-      copyToClipboard(allDm);
-    };
+    // Copy all DM button — hide for closed sessions
+    const copyAllBtn = document.getElementById('btn-copy-all-dm');
+    if (closed) {
+      copyAllBtn.classList.add('hidden');
+    } else {
+      copyAllBtn.classList.remove('hidden');
+      copyAllBtn.onclick = () => {
+        const allDm = (l.artistes || []).filter(a => a.dm_text).map(a => a.dm_text).join('\n---\n');
+        copyToClipboard(allDm);
+      };
+    }
 
     // Individual copy buttons
     list.querySelectorAll('.btn-copy-dm').forEach(btn => {
@@ -311,7 +332,7 @@ const App = (() => {
     });
   }
 
-  function artistCard(a, isRemplacant = false) {
+  function artistCard(a, isRemplacant = false, readonly = false) {
     const statusClass = a.present === true ? 'present' : a.present === false ? 'absent' : a.status || 'proposed';
     const statusLabel = a.present === true ? 'Present' : a.present === false ? 'Absent' :
       a.status === 'confirmed' ? 'Confirme' : a.status === 'declined' ? 'Decline' : 'En attente';
@@ -319,7 +340,7 @@ const App = (() => {
 
     return `
       <div class="artist-card" data-artist="${a.name || ''}">
-        <div class="checkin-checkbox ${isChecked ? 'checked' : ''}" data-checkin="${a.name || ''}" title="Marquer present/absent">${isChecked ? '✓' : ''}</div>
+        <div class="checkin-checkbox ${isChecked ? 'checked' : ''} ${readonly ? 'readonly' : ''}" ${readonly ? '' : `data-checkin="${a.name || ''}" title="Marquer present/absent"`}>${isChecked ? '✓' : ''}</div>
         <div class="artist-order">${isRemplacant ? 'R' : a.order || '—'}</div>
         <div class="artist-info">
           <div class="artist-name">
@@ -375,21 +396,62 @@ const App = (() => {
     const c = state.checklist;
     if (!c?.items) return;
 
+    const closed = isSessionClosed(state.session);
     const isToday = state.session?.j_minus === 0;
     const liveEl = document.getElementById('checklist-live');
-    liveEl.classList.toggle('hidden', !isToday);
+    liveEl.classList.toggle('hidden', !isToday && !closed);
+
+    // For closed sessions, mark everything as done
+    const items = closed
+      ? c.items.map(item => ({ ...item, done: true, timestamp: null }))
+      : c.items;
 
     const sections = { avant: [], show: [], apres: [] };
-    c.items.forEach(item => {
+    items.forEach(item => {
       (sections[item.section] || sections.avant).push(item);
     });
 
     const sectionLabels = { avant: 'Avant (18h30-19h15)', show: 'Show (19h30-20h25)', apres: 'Apres (20h25-21h00)' };
     const container = document.getElementById('checklist-sections');
-    container.innerHTML = Object.entries(sections).map(([key, items]) => `
+
+    if (closed) {
+      container.innerHTML = `<div class="closed-banner">Session terminee — checklist figee</div>` +
+        Object.entries(sections).map(([key, sectionItems]) => `
+          <div class="checklist-section">
+            <h3>${sectionLabels[key] || key}</h3>
+            ${sectionItems.map(item => `
+              <div class="checklist-item done">
+                <div class="checklist-checkbox checked">✓</div>
+                <span class="checklist-label">${item.label}</span>
+                <span class="checklist-time"></span>
+              </div>
+            `).join('')}
+          </div>
+        `).join('');
+
+      // Hide chapeau inputs for closed sessions — show summary instead
+      const chapeauSection = document.querySelector('.chapeau-section');
+      if (chapeauSection && state.session) {
+        const s = state.session;
+        const chapeau = state.stats?.sessions?.find(x => x.date === s.date);
+        if (chapeau?.chapeau) {
+          chapeauSection.innerHTML = `
+            <h3>Chapeau</h3>
+            <div class="chapeau-result">
+              Total : <strong>${chapeau.chapeau}€</strong><br>
+              ${chapeau.artistes_count || s.lineup_count || '?'} artistes<br>
+              Par artiste : <strong>${s.lineup_count ? Math.round(chapeau.chapeau * 0.9 / s.lineup_count * 100) / 100 : '?'}€</strong>
+            </div>
+          `;
+        }
+      }
+      return;
+    }
+
+    container.innerHTML = Object.entries(sections).map(([key, sectionItems]) => `
       <div class="checklist-section">
         <h3>${sectionLabels[key] || key}</h3>
-        ${items.map(item => `
+        ${sectionItems.map(item => `
           <div class="checklist-item ${item.done ? 'done' : ''}" data-item-id="${item.id}">
             <div class="checklist-checkbox ${item.done ? 'checked' : ''}">${item.done ? '✓' : ''}</div>
             <span class="checklist-label">${item.label}</span>
@@ -399,7 +461,7 @@ const App = (() => {
       </div>
     `).join('');
 
-    // Click handlers
+    // Click handlers — only for active sessions
     container.querySelectorAll('.checklist-item').forEach(el => {
       el.addEventListener('click', () => toggleChecklistItem(el.dataset.itemId));
     });
