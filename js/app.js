@@ -8,6 +8,7 @@ const App = (() => {
     checklist: null,
     paiements: null,
     currentView: 'dashboard',
+    selectedDate: null,
     lastRefresh: null,
   };
 
@@ -171,42 +172,63 @@ const App = (() => {
   // ===== DATA LOADING =====
   async function loadAllData(noCache = false) {
     try {
-      const [session, stats] = await Promise.all([
-        API.get('/api/session', noCache),
-        API.get('/api/stats', noCache),
-      ]);
-      state.session = session;
+      // Load stats first (contains all sessions for the session picker)
+      const stats = await API.get('/api/stats', noCache);
       state.stats = stats;
+
+      // If no selectedDate, pick the most recent session with real data
+      if (!state.selectedDate && stats?.sessions?.length) {
+        const withData = stats.sessions.filter(s => !s.annulee && s.phase !== 'init');
+        state.selectedDate = withData.length > 0 ? withData[withData.length - 1].date : stats.sessions[stats.sessions.length - 1].date;
+      }
+
+      const date = state.selectedDate;
+      const [session, lineup, checklist, paiements] = await Promise.all([
+        API.get(`/api/session${date ? '?date=' + date : ''}`, noCache),
+        API.get(`/api/lineup?date=${date}`, noCache),
+        API.get(`/api/checklist?date=${date}`, noCache),
+        API.get(`/api/paiements?date=${date}`, noCache),
+      ]);
+
+      state.session = session;
+      state.lineup = lineup;
+      state.checklist = checklist;
+      state.paiements = paiements;
       state.lastRefresh = Date.now();
       updateLastRefreshDisplay();
 
+      renderSessionPicker();
       renderDashboard();
+      renderLineup();
       renderStats();
-
-      // Load lineup if on that screen or for dashboard metrics
-      if (session?.date) {
-        const lineup = await API.get(`/api/lineup?date=${session.date}`, noCache);
-        state.lineup = lineup;
-        renderLineup();
-      }
-
-      // Load checklist
-      if (session?.date) {
-        const checklist = await API.get(`/api/checklist?date=${session.date}`, noCache);
-        state.checklist = checklist;
-        renderChecklist();
-      }
-
-      // Load paiements
-      if (session?.date) {
-        const paiements = await API.get(`/api/paiements?date=${session.date}`, noCache);
-        state.paiements = paiements;
-        renderPaiements();
-      }
+      renderChecklist();
+      renderPaiements();
     } catch (err) {
       console.error('Load error:', err);
       toast('Erreur de chargement', 'error');
     }
+  }
+
+  // ===== SESSION PICKER =====
+  function renderSessionPicker() {
+    const sessions = state.stats?.sessions?.filter(s => !s.annulee) || [];
+    if (sessions.length <= 1) return;
+
+    const picker = document.getElementById('session-picker');
+    if (!picker) return;
+
+    picker.innerHTML = sessions.map(s => {
+      const label = s.date.slice(5); // MM-DD
+      const active = s.date === state.selectedDate;
+      return `<button class="picker-btn ${active ? 'active' : ''}" data-date="${s.date}">${label}</button>`;
+    }).join('');
+
+    picker.querySelectorAll('.picker-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.selectedDate = btn.dataset.date;
+        loadAllData();
+      });
+    });
   }
 
   // ===== RENDER: DASHBOARD =====
@@ -408,32 +430,42 @@ const App = (() => {
 
   // ===== CHAPEAU CALC =====
   function setupChapeauCalc() {
-    const totalInput = document.getElementById('chapeau-total');
+    const especesInput = document.getElementById('chapeau-especes');
+    const numeriqueInput = document.getElementById('chapeau-numerique');
+    const totalDisplay = document.getElementById('chapeau-total-display');
     const nbInput = document.getElementById('chapeau-nb');
     const resultEl = document.getElementById('chapeau-result');
 
     function calc() {
-      const total = parseFloat(totalInput.value) || 0;
+      const especes = parseFloat(especesInput.value) || 0;
+      const numerique = parseFloat(numeriqueInput.value) || 0;
+      const total = Math.round((especes + numerique) * 100) / 100;
       const nb = parseInt(nbInput.value) || 0;
+
+      totalDisplay.textContent = `${total} EUR`;
+
       if (total > 0 && nb > 0) {
         const caisse = Math.round(total * 0.1 * 100) / 100;
         const parArtiste = Math.round((total * 0.9 / nb) * 100) / 100;
-        resultEl.innerHTML = `Caisse solidarite : <strong>${caisse}€</strong> | Par artiste : <strong>${parArtiste}€</strong>`;
+        resultEl.innerHTML = `Caisse solidarite : <strong>${caisse}€</strong><br>Par artiste : <strong>${parArtiste}€</strong><br><span style="color:var(--text-muted);font-size:0.8rem">Especes ${especes}€ + Numerique ${numerique}€</span>`;
       } else {
         resultEl.innerHTML = '';
       }
     }
 
-    totalInput.addEventListener('input', calc);
+    especesInput.addEventListener('input', calc);
+    numeriqueInput.addEventListener('input', calc);
     nbInput.addEventListener('input', calc);
 
     document.getElementById('btn-save-chapeau').addEventListener('click', async () => {
-      const total = parseFloat(totalInput.value);
+      const especes = parseFloat(especesInput.value) || 0;
+      const numerique = parseFloat(numeriqueInput.value) || 0;
+      const total = especes + numerique;
       const nb = parseInt(nbInput.value);
       const date = state.session?.date;
-      if (!total || !nb || !date) { toast('Remplir total et nombre artistes', 'error'); return; }
+      if (!total || !nb || !date) { toast('Remplir les montants et nombre artistes', 'error'); return; }
 
-      await API.post('/api/chapeau', { date, total, nb_artistes: nb });
+      await API.post('/api/chapeau', { date, total, nb_artistes: nb, especes, numerique });
       toast('Chapeau enregistre');
     });
   }

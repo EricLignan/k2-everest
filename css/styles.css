@@ -215,6 +215,35 @@ body {
 .nav-item.active { color: var(--accent); }
 .nav-icon { font-size: 1.25rem; }
 
+/* ===== SESSION PICKER ===== */
+.session-picker {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.session-picker::-webkit-scrollbar { display: none; }
+
+.picker-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 36px;
+}
+.picker-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
 /* ===== SESSION HERO ===== */
 .session-hero {
   text-align: center;
@@ -613,6 +642,25 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.chapeau-total-display {
+  padding: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.chapeau-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .input-group input {

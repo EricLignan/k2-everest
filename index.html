@@ -60,6 +60,7 @@
     <main class="app-main">
       <!-- DASHBOARD -->
       <section id="view-dashboard" class="view active">
+        <div id="session-picker" class="session-picker"></div>
         <div id="session-hero" class="session-hero">
           <div class="session-phase-badge" id="session-phase">—</div>
           <h2 id="session-date" class="session-date">Chargement...</h2>
@@ -164,11 +165,22 @@
           <h3>Chapeau</h3>
           <div class="chapeau-inputs">
             <div class="input-group">
-              <label for="chapeau-total">Total</label>
+              <label for="chapeau-especes">Especes</label>
               <div class="input-with-unit">
-                <input type="number" id="chapeau-total" inputmode="numeric" placeholder="0">
+                <input type="number" id="chapeau-especes" inputmode="decimal" placeholder="0" step="0.01">
                 <span>EUR</span>
               </div>
+            </div>
+            <div class="input-group">
+              <label for="chapeau-numerique">Numerique</label>
+              <div class="input-with-unit">
+                <input type="number" id="chapeau-numerique" inputmode="decimal" placeholder="0" step="0.01">
+                <span>EUR</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Total</label>
+              <div class="chapeau-total-display" id="chapeau-total-display">0 EUR</div>
             </div>
             <div class="input-group">
               <label for="chapeau-nb">Artistes presents</label>
