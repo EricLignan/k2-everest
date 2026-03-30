@@ -1,18 +1,6 @@
 {
   "sessions": [
     {
-      "date": "2026-02-18",
-      "jour": "mercredi",
-      "heure": "19h30",
-      "phase": "annule",
-      "artistes_count": 5,
-      "spectateurs": 0,
-      "chapeau": 0,
-      "parity_pct": 0,
-      "annulee": true,
-      "notes": "Bar exceptionnellement ferme"
-    },
-    {
       "date": "2026-02-24",
       "jour": "mardi",
       "heure": "19h30",
@@ -22,7 +10,10 @@
       "chapeau": 45,
       "parity_pct": 50,
       "annulee": false,
-      "notes": "Lineup 50% parite (3F/3H)"
+      "mc": null,
+      "notes": "Lineup 50% parite (3F/3H)",
+      "lineup": [],
+      "paiements": []
     },
     {
       "date": "2026-03-10",
@@ -32,9 +23,34 @@
       "artistes_count": 10,
       "spectateurs": 25,
       "chapeau": 94,
-      "parity_pct": 30,
+      "parity_pct": 20,
       "annulee": false,
-      "notes": "10/10 artistes. Chapeau 94 EUR. Decale du mercredi (PSG)."
+      "mc": null,
+      "notes": "10/10 artistes. Decale du mercredi (PSG). Chapeau 94 EUR (54 esp + 20 Lydia + 20 Wero).",
+      "lineup": [
+        { "name": "Quentin Montaclair", "instagram": "quentin.monta", "phone": "+33618747373", "genre": "H", "order": 1, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Emile Rock", "instagram": null, "phone": "+33769118984", "genre": "H", "order": 2, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Iris Drige", "instagram": null, "phone": "+33664615543", "genre": "F", "order": 3, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Thomas Ramond", "instagram": "jd_sur_scene", "phone": "+33642940138", "genre": "H", "order": 4, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Robin Clouard", "instagram": "robinclouard", "phone": "+33610920522", "genre": "H", "order": 5, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Casimir Lissowski", "instagram": null, "phone": "+33684952602", "genre": "H", "order": 6, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Gabii Gabriel", "instagram": "gabii", "phone": null, "genre": "H", "order": 7, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Jakem", "instagram": "jakem.desso", "phone": "+33636807143", "genre": "H", "order": 8, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Fafou", "instagram": "fafouquoila", "phone": null, "genre": "F", "order": 9, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Fabregaz", "instagram": "fabricequenum__", "phone": "+33687398007", "genre": "H", "order": 10, "status": "confirmed", "is_mc": false, "primo": false }
+      ],
+      "paiements": [
+        { "name": "Quentin Montaclair", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
+        { "name": "Emile Rock", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
+        { "name": "Iris Drige", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-14" },
+        { "name": "Thomas Ramond", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-27" },
+        { "name": "Robin Clouard", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
+        { "name": "Casimir Lissowski", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-14" },
+        { "name": "Gabii Gabriel", "montant": 8.46, "mode": "virement", "paye": true, "date_paiement": "2026-03-24" },
+        { "name": "Jakem", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-18" },
+        { "name": "Fafou", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
+        { "name": "Fabregaz", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-14" }
+      ]
     },
     {
       "date": "2026-03-25",
@@ -44,23 +60,23 @@
       "artistes_count": 12,
       "spectateurs": 8,
       "chapeau": 67,
-      "parity_pct": 8,
+      "parity_pct": 17,
       "annulee": false,
       "mc": "Eddie CuDi",
-      "notes": "12 artistes presents (13 venus, 1 absent). Premiere session modele pull.",
+      "notes": "12 artistes presents. Premiere session modele pull (dispos via formulaire).",
       "lineup": [
-        { "name": "Maxime Beaugendre", "instagram": "maxime_experimente", "genre": "H", "order": 1, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Stephane Dolbachian", "instagram": "Stef_stand", "genre": "H", "order": 2, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Eddie CuDi", "instagram": "eddiecudi", "genre": "H", "order": 3, "status": "confirmed", "is_mc": true, "primo": false },
-        { "name": "Maxime Farrayre", "instagram": null, "genre": "H", "order": 4, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Pierre Sabik", "instagram": "lejokari", "genre": "H", "order": 6, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Violaine de Pins", "instagram": null, "genre": "F", "order": 7, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Plante Aquatique", "instagram": null, "genre": "H", "order": 8, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Thibault Curatolo", "instagram": null, "genre": "H", "order": 9, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "JD", "instagram": "jd_sur_scene", "genre": "H", "order": 10, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Jakem", "instagram": "jakem.desso", "genre": "H", "order": 12, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Casimir Lissowski", "instagram": null, "genre": "H", "order": 13, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Helios", "instagram": null, "genre": "F", "order": 14, "status": "confirmed", "is_mc": false, "primo": true }
+        { "name": "Maxime Beaugendre", "instagram": "maxime_experimente", "phone": "+33658527128", "genre": "H", "order": 1, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Stephane Dolbachian", "instagram": "Stef_stand", "phone": "+33760971448", "genre": "H", "order": 2, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Eddie CuDi", "instagram": "eddiecudi", "phone": "+33623493590", "genre": "H", "order": 3, "status": "confirmed", "is_mc": true, "primo": false },
+        { "name": "Maxime Farrayre", "instagram": null, "phone": "+33658859790", "genre": "H", "order": 4, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Pierre Sabik", "instagram": "lejokari", "phone": "+33686843369", "genre": "H", "order": 6, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Violaine de Pins", "instagram": null, "phone": null, "genre": "F", "order": 7, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Plante Aquatique", "instagram": null, "phone": "+33768095294", "genre": "H", "order": 8, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "Thibault Curatolo", "instagram": null, "phone": null, "genre": "H", "order": 9, "status": "confirmed", "is_mc": false, "primo": true },
+        { "name": "JD", "instagram": "jd_sur_scene", "phone": "+33642940138", "genre": "H", "order": 10, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Jakem", "instagram": "jakem.desso", "phone": "+33636807143", "genre": "H", "order": 12, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Casimir Lissowski", "instagram": null, "phone": "+33684952602", "genre": "H", "order": 13, "status": "confirmed", "is_mc": false, "primo": false },
+        { "name": "Helios", "instagram": null, "phone": null, "genre": "F", "order": 14, "status": "confirmed", "is_mc": false, "primo": true }
       ],
       "paiements": [
         { "name": "Maxime Beaugendre", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
