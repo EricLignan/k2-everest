@@ -1,10 +1,8 @@
 /* K2 — API Client */
 
 const API = (() => {
-  // Worker URL — change to production URL after deploy
-  const BASE = location.hostname === 'localhost'
-    ? 'http://localhost:8787'
-    : '';  // same origin in production
+  // Same origin — Pages Functions handle /api/* routes
+  const BASE = '';
 
   function getToken() {
     return localStorage.getItem('k2_token');
