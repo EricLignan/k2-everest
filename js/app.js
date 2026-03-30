@@ -256,6 +256,36 @@ const App = (() => {
     document.getElementById('m-parite').textContent = s.parity_pct != null ? `${s.parity_pct}%` : '—';
     document.getElementById('m-primo').textContent = s.primo_count ?? '—';
 
+    // Health indicator
+    const healthEl = document.getElementById('session-health');
+    if (healthEl && !closed) {
+      const risks = [];
+      if ((s.lineup_count || 0) < 6) risks.push('Moins de 6 artistes');
+      if ((s.parity_pct || 0) < 20) risks.push('Parite < 20%');
+      if (s.j_minus <= 2 && (s.lineup_count || 0) < 8) risks.push('J-2 et lineup incomplet');
+      const level = risks.length === 0 ? 'green' : risks.length <= 1 ? 'orange' : 'red';
+      const labels = { green: 'OK', orange: 'Attention', red: 'A risque' };
+      healthEl.className = `health-badge health-${level}`;
+      healthEl.textContent = labels[level];
+      healthEl.title = risks.join(', ') || 'Tout est bon';
+    } else if (healthEl) {
+      healthEl.className = 'health-badge hidden';
+    }
+
+    // Who's missing (non-closed only)
+    const missingEl = document.getElementById('missing-artists');
+    if (missingEl && !closed && state.lineup?.artistes) {
+      const pending = state.lineup.artistes.filter(a => a.status !== 'confirmed' && a.status !== 'declined');
+      if (pending.length > 0) {
+        missingEl.innerHTML = `<strong>En attente :</strong> ${pending.map(a => a.name).join(', ')}`;
+        missingEl.classList.remove('hidden');
+      } else {
+        missingEl.classList.add('hidden');
+      }
+    } else if (missingEl) {
+      missingEl.classList.add('hidden');
+    }
+
     // Checklist progress
     const done = s.checklist?.done ?? 0;
     const total = s.checklist?.total ?? 12;
@@ -348,7 +378,7 @@ const App = (() => {
             ${a.genre === 'F' ? '<span class="badge-genre">F</span>' : ''}
             ${a.is_mc ? '<span class="badge-mc">MC</span>' : ''}
           </div>
-          <div class="artist-ig">${a.instagram ? '@' + a.instagram : ''}</div>
+          <div class="artist-ig">${a.instagram ? '@' + a.instagram : ''}${a.phone ? ` <a href="tel:${a.phone}" class="artist-phone" onclick="event.stopPropagation()">📞</a>` : ''}</div>
         </div>
         <span class="status-pill status-${statusClass}">${statusLabel}</span>
         ${a.dm_text ? `<button class="btn-copy-dm" data-dm="${escapeAttr(a.dm_text)}" title="Copier DM">📋</button>` : ''}
@@ -383,8 +413,24 @@ const App = (() => {
       barColor: '#e94560',
     });
 
-    document.getElementById('s-chapeau-last').textContent = s.sessions?.length ? `${s.sessions[s.sessions.length - 1].chapeau || 0}€` : '—';
+    const validSessions = s.sessions?.filter(x => !x.annulee && x.phase !== 'init') || [];
+    const last = validSessions.length > 0 ? validSessions[validSessions.length - 1] : null;
+    const prev = validSessions.length > 1 ? validSessions[validSessions.length - 2] : null;
+
+    document.getElementById('s-chapeau-last').textContent = last ? `${last.chapeau || 0}€` : '—';
     document.getElementById('s-chapeau-avg').textContent = s.totals?.avg_chapeau ? `${Math.round(s.totals.avg_chapeau)}€` : '—';
+
+    // Trend arrows
+    const trendEl = document.getElementById('s-trend');
+    if (trendEl && last && prev && prev.spectateurs > 0) {
+      const pct = Math.round((last.spectateurs - prev.spectateurs) / prev.spectateurs * 100);
+      const arrow = pct >= 0 ? '↑' : '↓';
+      const color = pct >= 0 ? 'var(--accent-green)' : 'var(--accent)';
+      trendEl.innerHTML = `<span style="color:${color};font-weight:700">${arrow} ${Math.abs(pct)}%</span> frequentation vs precedente`;
+      trendEl.classList.remove('hidden');
+    } else if (trendEl) {
+      trendEl.classList.add('hidden');
+    }
     document.getElementById('s-parity-pct').textContent = `${s.totals?.avg_parity || 0}%`;
     document.getElementById('s-parity-fill').style.width = `${s.totals?.avg_parity || 0}%`;
     document.getElementById('s-pool').textContent = s.totals?.total_artistes_uniques ?? '—';

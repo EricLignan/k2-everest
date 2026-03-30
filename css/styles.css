@@ -244,6 +244,43 @@ body {
   border-color: var(--accent);
 }
 
+/* ===== HEALTH BADGE ===== */
+.health-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 auto 0.5rem;
+}
+.health-green { background: #28a74530; color: var(--accent-green); }
+.health-orange { background: #fd7e1430; color: var(--accent-orange); }
+.health-red { background: #dc354530; color: var(--accent); }
+
+.missing-artists {
+  background: var(--bg-card);
+  border: 1px solid var(--accent-orange);
+  border-radius: var(--radius);
+  padding: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  color: var(--accent-orange);
+}
+
+.trend-line {
+  text-align: center;
+  font-size: 0.85rem;
+  padding: 8px;
+  color: var(--text-muted);
+}
+
+.artist-phone {
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-left: 4px;
+}
+
 /* ===== SESSION HERO ===== */
 .session-hero {
   text-align: center;
