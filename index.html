@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>K2 — Everest Comedy Club</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="screen active">
+    <div class="auth-container">
+      <div class="auth-logo">K2</div>
+      <p class="auth-subtitle">Everest Comedy Club</p>
+      <div class="pin-display">
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+      </div>
+      <div class="pin-error" id="pin-error"></div>
+      <div class="pin-pad">
+        <button class="pin-key" data-key="1">1</button>
+        <button class="pin-key" data-key="2">2</button>
+        <button class="pin-key" data-key="3">3</button>
+        <button class="pin-key" data-key="4">4</button>
+        <button class="pin-key" data-key="5">5</button>
+        <button class="pin-key" data-key="6">6</button>
+        <button class="pin-key" data-key="7">7</button>
+        <button class="pin-key" data-key="8">8</button>
+        <button class="pin-key" data-key="9">9</button>
+        <button class="pin-key" data-key="clear">✕</button>
+        <button class="pin-key" data-key="0">0</button>
+        <button class="pin-key" data-key="back">←</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP SHELL -->
+  <div id="app" class="hidden">
+    <!-- HEADER -->
+    <header class="app-header">
+      <span class="header-title">K2</span>
+      <div class="header-actions">
+        <span id="offline-badge" class="badge-offline hidden">Offline</span>
+        <span id="last-updated" class="last-updated"></span>
+        <button id="btn-refresh" class="btn-icon" title="Actualiser">↻</button>
+        <button id="btn-theme" class="btn-icon" title="Theme">☀</button>
+        <button id="btn-logout" class="btn-icon" title="Deconnexion">⏻</button>
+      </div>
+    </header>
+
+    <!-- SCREENS -->
+    <main class="app-main">
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="view active">
+        <div id="session-hero" class="session-hero">
+          <div class="session-phase-badge" id="session-phase">—</div>
+          <h2 id="session-date" class="session-date">Chargement...</h2>
+          <p id="session-countdown" class="session-countdown"></p>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-value" id="m-confirmes">—</span>
+            <span class="metric-label">confirmes</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="m-inscrits">—</span>
+            <span class="metric-label">inscrits</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="m-parite">—</span>
+            <span class="metric-label">parite</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="m-primo">—</span>
+            <span class="metric-label">primo</span>
+          </div>
+        </div>
+
+        <div class="checklist-progress">
+          <div class="progress-header">
+            <span>Checklist</span>
+            <span id="checklist-count">0/0</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="checklist-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div id="actions-list" class="actions-list">
+          <h3>Actions rapides</h3>
+          <div id="actions-items"></div>
+        </div>
+      </section>
+
+      <!-- LINEUP -->
+      <section id="view-lineup" class="view">
+        <div class="view-header">
+          <h2>Lineup</h2>
+          <span id="lineup-count" class="badge">0/0</span>
+        </div>
+        <div id="lineup-list" class="card-list"></div>
+        <div id="lineup-remplacants" class="card-list"></div>
+        <div class="view-actions">
+          <button id="btn-copy-all-dm" class="btn-primary">Copier tous les DM</button>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section id="view-stats" class="view">
+        <div class="view-header"><h2>Stats</h2></div>
+        <div id="stats-chart" class="stats-chart"></div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-value" id="s-chapeau-last">—</span>
+            <span class="metric-label">dernier chapeau</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="s-chapeau-avg">—</span>
+            <span class="metric-label">moy/session</span>
+          </div>
+        </div>
+        <div class="parity-bar">
+          <div class="parity-header">
+            <span>Parite</span>
+            <span id="s-parity-pct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill parity-fill" id="s-parity-fill" style="width:0%"></div>
+            <div class="parity-target" style="left:40%"></div>
+          </div>
+          <span class="parity-target-label">Objectif 40%</span>
+        </div>
+        <div class="metrics-grid" style="margin-top:1rem">
+          <div class="metric-card">
+            <span class="metric-value" id="s-pool">—</span>
+            <span class="metric-label">pool artistes</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="s-sessions">—</span>
+            <span class="metric-label">sessions</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHECKLIST JOUR J -->
+      <section id="view-checklist" class="view">
+        <div class="view-header">
+          <h2>Jour J</h2>
+          <span id="checklist-live" class="badge badge-live hidden">LIVE</span>
+        </div>
+
+        <div id="checklist-sections"></div>
+
+        <div class="chapeau-section">
+          <h3>Chapeau</h3>
+          <div class="chapeau-inputs">
+            <div class="input-group">
+              <label for="chapeau-total">Total</label>
+              <div class="input-with-unit">
+                <input type="number" id="chapeau-total" inputmode="numeric" placeholder="0">
+                <span>EUR</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="chapeau-nb">Artistes presents</label>
+              <input type="number" id="chapeau-nb" inputmode="numeric" placeholder="0">
+            </div>
+          </div>
+          <div class="chapeau-result" id="chapeau-result"></div>
+          <button id="btn-save-chapeau" class="btn-primary">Enregistrer</button>
+        </div>
+      </section>
+
+      <!-- PAIEMENTS -->
+      <section id="view-paiements" class="view">
+        <div class="view-header">
+          <h2>Paiements</h2>
+          <span id="paiements-count" class="badge">0/0</span>
+        </div>
+        <div id="paiements-summary" class="paiements-summary"></div>
+        <div id="paiements-list" class="card-list"></div>
+      </section>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <a href="#dashboard" class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">◉</span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a href="#lineup" class="nav-item" data-view="lineup">
+        <span class="nav-icon">♫</span>
+        <span class="nav-label">Lineup</span>
+      </a>
+      <a href="#stats" class="nav-item" data-view="stats">
+        <span class="nav-icon">▦</span>
+        <span class="nav-label">Stats</span>
+      </a>
+      <a href="#checklist" class="nav-item" data-view="checklist">
+        <span class="nav-icon">☑</span>
+        <span class="nav-label">Jour J</span>
+      </a>
+      <a href="#paiements" class="nav-item" data-view="paiements">
+        <span class="nav-icon">€</span>
+        <span class="nav-label">Paie</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
