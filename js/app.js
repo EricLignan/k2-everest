@@ -217,8 +217,10 @@ const App = (() => {
     const picker = document.getElementById('session-picker');
     if (!picker) return;
 
+    const moisCourts = ['', 'jan', 'fev', 'mar', 'avr', 'mai', 'jun', 'jul', 'aou', 'sep', 'oct', 'nov', 'dec'];
     picker.innerHTML = sessions.map(s => {
-      const label = s.date.slice(5); // MM-DD
+      const [, m, d] = s.date.split('-');
+      const label = `${parseInt(d)} ${moisCourts[parseInt(m)]}`;
       const active = s.date === state.selectedDate;
       return `<button class="picker-btn ${active ? 'active' : ''}" data-date="${s.date}">${label}</button>`;
     }).join('');
