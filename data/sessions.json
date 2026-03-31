@@ -14,8 +14,8 @@
       "notes": "Session annulee — bar exceptionnellement ferme. Artistes a reprogrammer. Lineup etait 100% masculin.",
       "lineup": [
         {
-          "name": "Stephane Dolbachian",
-          "real_name": null,
+          "name": "Stéphane Dolbachian",
+          "real_name": "Stephane Dolbachian",
           "hubspot_id": "699863432423",
           "instagram": "Stef_stand",
           "phone": "+33760971448",
@@ -27,7 +27,7 @@
         },
         {
           "name": "Elias Bouhaddi",
-          "real_name": null,
+          "real_name": "Elias Bouhaddi",
           "hubspot_id": "699254923479",
           "instagram": "elias.hanafi",
           "phone": "+33620291142",
@@ -39,7 +39,7 @@
         },
         {
           "name": "Amin Iamarene",
-          "real_name": null,
+          "real_name": "Amin Iamarene",
           "hubspot_id": "699245151447",
           "instagram": "amin_iamarene",
           "phone": "0608890057",
@@ -51,7 +51,7 @@
         },
         {
           "name": "Kavi Art",
-          "real_name": null,
+          "real_name": "Kavi Art",
           "hubspot_id": "699345549554",
           "instagram": "kavi_art____",
           "phone": "+33661871442",
@@ -62,8 +62,8 @@
           "primo": true
         },
         {
-          "name": "Thomas Ramond",
-          "real_name": null,
+          "name": "JD",
+          "real_name": "Thomas Ramond",
           "hubspot_id": "699248025828",
           "instagram": "Jd_sur_scene",
           "phone": "+33642940138",
@@ -104,7 +104,7 @@
       "lineup": [
         {
           "name": "Maxime Beaugendre",
-          "real_name": null,
+          "real_name": "Maxime Beaugendre",
           "hubspot_id": "699417351391",
           "instagram": "maxime_experimente",
           "phone": "+33658527128",
@@ -116,7 +116,7 @@
         },
         {
           "name": "Alice Jacquot",
-          "real_name": null,
+          "real_name": "Alice Jacquot",
           "hubspot_id": "699249495256",
           "instagram": "alice.joue",
           "phone": "+33612107382",
@@ -127,10 +127,10 @@
           "primo": true
         },
         {
-          "name": "Kevin Reeb",
-          "real_name": null,
+          "name": "Kévin Reeb",
+          "real_name": "Kevin Reeb",
           "hubspot_id": "503369105643",
-          "instagram": null,
+          "instagram": "Kevin_reeb",
           "phone": "+33630829429",
           "genre": "H",
           "order": 3,
@@ -140,9 +140,9 @@
         },
         {
           "name": "Eddie CuDi",
-          "real_name": null,
+          "real_name": "Eddie CuDi",
           "hubspot_id": "699255876831",
-          "instagram": null,
+          "instagram": "eddiecudi",
           "phone": "+33623493590",
           "genre": "H",
           "order": 4,
@@ -152,9 +152,9 @@
         },
         {
           "name": "Laura Mougenot",
-          "real_name": null,
+          "real_name": "Laura Mougenot",
           "hubspot_id": "699583901914",
-          "instagram": null,
+          "instagram": "Laura_von_pepper",
           "phone": "+33684212690",
           "genre": "F",
           "order": 5,
@@ -164,7 +164,7 @@
         },
         {
           "name": "Pachna",
-          "real_name": null,
+          "real_name": "Pachna",
           "hubspot_id": "699254588610",
           "instagram": "pachna.m",
           "phone": "+33784445194",
@@ -176,9 +176,9 @@
         },
         {
           "name": "Iris Drigé",
-          "real_name": null,
+          "real_name": "Iris Drigé",
           "hubspot_id": "699248745660",
-          "instagram": null,
+          "instagram": "iris.drige",
           "phone": "+33664615543",
           "genre": "F",
           "order": 7,
@@ -187,10 +187,10 @@
           "primo": true
         },
         {
-          "name": "Victor Salomon",
-          "real_name": null,
+          "name": "Doan",
+          "real_name": "Victor Salomon",
           "hubspot_id": "699265113320",
-          "instagram": null,
+          "instagram": "do_doan_",
           "phone": "+33659278971",
           "genre": "H",
           "order": 8,
@@ -200,9 +200,9 @@
         },
         {
           "name": "Nathan Bel",
-          "real_name": null,
+          "real_name": "Nathan Bel",
           "hubspot_id": "699271330026",
-          "instagram": null,
+          "instagram": "nathan_bel",
           "phone": "+33644015020",
           "genre": "H",
           "order": 9,
@@ -211,8 +211,8 @@
           "primo": true
         },
         {
-          "name": "Anne Corte",
-          "real_name": null,
+          "name": "Anne Corté",
+          "real_name": "Anne Corte",
           "hubspot_id": "700030193912",
           "instagram": "Corte_culte",
           "phone": "+33782320242",
@@ -227,7 +227,7 @@
         {
           "name": "Laure Beauvois",
           "hubspot_id": "699256881373",
-          "instagram": null,
+          "instagram": "Laure.beauvois",
           "phone": "+33629037933",
           "genre": "F",
           "order": null,
@@ -238,7 +238,7 @@
         {
           "name": "Benjamin Fosca",
           "hubspot_id": "699338535119",
-          "instagram": null,
+          "instagram": "Ben_fosca",
           "phone": "+33676087411",
           "genre": "H",
           "order": null,
@@ -264,7 +264,7 @@
       "lineup": [
         {
           "name": "Quentin Montaclair",
-          "real_name": null,
+          "real_name": "Quentin Montaclair",
           "hubspot_id": "699287714032",
           "instagram": "quentin.monta",
           "phone": "+33618747373",
@@ -276,9 +276,9 @@
         },
         {
           "name": "Émile Rock",
-          "real_name": null,
+          "real_name": "Émile Rock",
           "hubspot_id": "699313676536",
-          "instagram": null,
+          "instagram": "emile.rck",
           "phone": "+33769118984",
           "genre": "H",
           "order": 2,
@@ -288,9 +288,9 @@
         },
         {
           "name": "Iris Drigé",
-          "real_name": null,
+          "real_name": "Iris Drigé",
           "hubspot_id": "699248745660",
-          "instagram": null,
+          "instagram": "iris.drige",
           "phone": "+33664615543",
           "genre": "F",
           "order": 3,
@@ -299,10 +299,10 @@
           "primo": false
         },
         {
-          "name": "Thomas Ramond",
-          "real_name": null,
+          "name": "JD",
+          "real_name": "Thomas Ramond",
           "hubspot_id": "699248025828",
-          "instagram": null,
+          "instagram": "Jd_sur_scene",
           "phone": "+33642940138",
           "genre": "H",
           "order": 4,
@@ -312,9 +312,9 @@
         },
         {
           "name": "Robin Clouard",
-          "real_name": null,
+          "real_name": "Robin Clouard",
           "hubspot_id": "699291354318",
-          "instagram": null,
+          "instagram": "robinclouard",
           "phone": "+33610920522",
           "genre": "H",
           "order": 5,
@@ -324,9 +324,9 @@
         },
         {
           "name": "Casimir Lissowski",
-          "real_name": null,
+          "real_name": "Casimir Lissowski",
           "hubspot_id": "699283801300",
-          "instagram": null,
+          "instagram": "casimirzidane",
           "phone": "+33684952602",
           "genre": "H",
           "order": 6,
@@ -336,10 +336,10 @@
         },
         {
           "name": "Gabii Gabriel",
-          "real_name": null,
+          "real_name": "Gabii Gabriel",
           "hubspot_id": "699264620744",
           "instagram": "gabii",
-          "phone": null,
+          "phone": "+33619077517",
           "genre": "H",
           "order": 7,
           "status": "confirmed",
@@ -348,7 +348,7 @@
         },
         {
           "name": "Jakem",
-          "real_name": null,
+          "real_name": "Jakem",
           "hubspot_id": "699340090591",
           "instagram": "jakem.desso",
           "phone": "+33636807143",
@@ -360,7 +360,7 @@
         },
         {
           "name": "Fafou",
-          "real_name": null,
+          "real_name": "Fafou",
           "hubspot_id": "707849671897",
           "instagram": "fafouquoila",
           "phone": null,
@@ -372,7 +372,7 @@
         },
         {
           "name": "Fabregaz",
-          "real_name": null,
+          "real_name": "Fabregaz",
           "hubspot_id": "699254944986",
           "instagram": "fabricequenum__",
           "phone": "+33687398007",
@@ -387,7 +387,7 @@
         {
           "name": "Guarani Feitosa",
           "hubspot_id": "702774903021",
-          "instagram": null,
+          "instagram": "guarani_feitosa",
           "phone": "+33620720699",
           "genre": "H",
           "order": null,
@@ -484,7 +484,7 @@
       "lineup": [
         {
           "name": "Maxime Beaugendre",
-          "real_name": null,
+          "real_name": "Maxime Beaugendre",
           "hubspot_id": "699417351391",
           "instagram": "maxime_experimente",
           "phone": "+33658527128",
@@ -495,8 +495,8 @@
           "primo": false
         },
         {
-          "name": "Stephane Dolbachian",
-          "real_name": null,
+          "name": "Stéphane Dolbachian",
+          "real_name": "Stephane Dolbachian",
           "hubspot_id": "699863432423",
           "instagram": "Stef_stand",
           "phone": "+33760971448",
@@ -508,7 +508,7 @@
         },
         {
           "name": "Eddie CuDi",
-          "real_name": null,
+          "real_name": "Eddie CuDi",
           "hubspot_id": "699255876831",
           "instagram": "eddiecudi",
           "phone": "+33623493590",
@@ -520,10 +520,10 @@
         },
         {
           "name": "Maxime Farrayre",
-          "real_name": null,
+          "real_name": "Maxime Farrayre",
           "hubspot_id": "700030637250",
-          "instagram": null,
-          "phone": null,
+          "instagram": "maxime_farrayre",
+          "phone": "+33658859790",
           "genre": "H",
           "order": 4,
           "status": "confirmed",
@@ -532,7 +532,7 @@
         },
         {
           "name": "Pierre Sabik",
-          "real_name": null,
+          "real_name": "Pierre Sabik",
           "hubspot_id": "702710075603",
           "instagram": "lejokari",
           "phone": "+33686843369",
@@ -544,10 +544,10 @@
         },
         {
           "name": "Violaine de Pins",
-          "real_name": null,
+          "real_name": "Violaine de Pins",
           "hubspot_id": "699543630052",
-          "instagram": null,
-          "phone": null,
+          "instagram": "vio2pins",
+          "phone": "+33642154722",
           "genre": "F",
           "order": 7,
           "status": "confirmed",
@@ -558,8 +558,8 @@
           "name": "Plante Aquatique",
           "real_name": "Younes Touta",
           "hubspot_id": "700025868487",
-          "instagram": null,
-          "phone": null,
+          "instagram": "plante_aquatique",
+          "phone": "+33626074777",
           "genre": "H",
           "order": 8,
           "status": "confirmed",
@@ -568,9 +568,9 @@
         },
         {
           "name": "Thibault Curatolo",
-          "real_name": null,
+          "real_name": "Thibault Curatolo",
           "hubspot_id": "735407848646",
-          "instagram": null,
+          "instagram": "tibocrtl",
           "phone": null,
           "genre": "H",
           "order": 9,
@@ -604,9 +604,9 @@
         },
         {
           "name": "Casimir Lissowski",
-          "real_name": null,
+          "real_name": "Casimir Lissowski",
           "hubspot_id": "699283801300",
-          "instagram": null,
+          "instagram": "casimirzidane",
           "phone": "+33684952602",
           "genre": "H",
           "order": 13,
@@ -618,7 +618,7 @@
           "name": "Hélios",
           "real_name": "Léa Nouchi",
           "hubspot_id": "734696983771",
-          "instagram": null,
+          "instagram": "helijokes",
           "phone": null,
           "genre": "F",
           "order": 14,
@@ -732,5 +732,5 @@
       "paiements": []
     }
   ],
-  "generated": "2026-03-31T19:05:26.408594"
+  "generated": "2026-03-31T19:40:19.073010"
 }
