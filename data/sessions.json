@@ -473,7 +473,7 @@
       "date": "2026-03-25",
       "jour": "mercredi",
       "heure": "19h30",
-      "phase": "bilan",
+      "phase": "archive",
       "artistes_count": 12,
       "spectateurs": 8,
       "chapeau": 67,
@@ -682,8 +682,8 @@
           "name": "Thibault Curatolo",
           "montant": 5.03,
           "mode": "wero",
-          "paye": false,
-          "date_paiement": null
+          "paye": true,
+          "date_paiement": "2026-03-31"
         },
         {
           "name": "JD",
@@ -732,5 +732,5 @@
       "paiements": []
     }
   ],
-  "generated": "2026-03-31T18:48:32.848706"
+  "generated": "2026-03-31T19:05:26.408594"
 }
