@@ -254,29 +254,87 @@ async function handleSession(env, url) {
 
 function buildActions(session) {
   const phase = session.phase;
+  const hasLineup = session.lineup?.length > 0;
+  const confirmedCount = (session.lineup || []).filter(a => a.status === 'confirmed').length;
+  const pendingCount = (session.lineup || []).filter(a => a.status !== 'confirmed' && a.status !== 'declined').length;
+  const HUBSPOT_EMAILS = 'https://app-eu1.hubspot.com/email/143993525/manage/draft';
+  const HUBSPOT_CRM = 'https://app-eu1.hubspot.com/contacts/143993525/objects/0-1/views/all/list';
+  const IG = 'https://www.instagram.com/everestcomedyclub/';
+
   const actions = [];
 
+  // --- Phase INIT ---
   if (phase === 'init') {
-    actions.push({ id: 'dispos', label: 'Collecter les disponibilites', done: false, url: null });
-  }
-  if (!session.lineup?.length) {
-    actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: false, url: null });
-  } else {
-    actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: true, url: null });
+    actions.push({ id: 'init-yaml', label: 'Creer la session (YAML + date)', done: false, url: null, category: 'setup' });
   }
 
-  const pending = (session.lineup || []).filter(a => a.status !== 'confirmed' && a.status !== 'declined');
-  if (pending.length > 0) {
-    actions.push({ id: 'confirm', label: `Confirmer ${pending.length} artiste(s)`, done: false, url: null });
+  // --- Phase DISPOS ---
+  if (phase === 'dispos' || phase === 'init') {
+    actions.push(
+      { id: 'email-dispos', label: '📧 Envoyer email dispos artistes', done: phase !== 'dispos' && phase !== 'init', url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'ig-story-dispos', label: '📸 Story IG : "Session le X, inscrivez-vous"', done: false, url: IG, category: 'instagram' },
+      { id: 'dm-orphelins', label: '💬 DM Instagram aux nouveaux artistes', done: false, url: null, category: 'instagram' },
+    );
   }
 
-  if (['booking', 'annonce', 'soiree'].includes(phase)) {
-    actions.push({
-      id: 'hubspot',
-      label: 'Voir le CRM HubSpot',
-      done: false,
-      url: 'https://app-eu1.hubspot.com/contacts/143993525/objects/0-1/views/all/list',
-    });
+  // --- Phase SELECTION ---
+  if (phase === 'dispos' || phase === 'selection') {
+    actions.push(
+      { id: 'select-lineup', label: `🎯 Selectionner le lineup (${confirmedCount}/10)`, done: hasLineup, url: null, category: 'lineup' },
+    );
+  }
+
+  // --- Phase CONFIRMATION ---
+  if (phase === 'selection' || phase === 'confirmation' || (phase === 'dispos' && hasLineup)) {
+    actions.push(
+      { id: 'email-confirm', label: '📧 Envoyer confirmation artistes (OUI/NON)', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'email-non-retenu', label: '📧 Envoyer email non-retenus', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+    );
+    if (pendingCount > 0) {
+      actions.push({ id: 'relance-dm', label: `💬 Relancer ${pendingCount} artiste(s) sans reponse (DM IG)`, done: false, url: null, category: 'instagram' });
+    }
+  }
+
+  // --- Phase ANNONCE ---
+  if (phase === 'confirmation' || phase === 'annonce') {
+    actions.push(
+      { id: 'email-spectateurs', label: '📧 Envoyer invitation spectateurs', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'ig-post-lineup', label: '📸 Post IG : visuel lineup (C/S)', done: false, url: IG, category: 'instagram' },
+      { id: 'ig-story-lineup', label: '📸 Story IG : "Lineup revele !"', done: false, url: IG, category: 'instagram' },
+    );
+  }
+
+  // --- Phase J-1 ---
+  if (phase === 'annonce' || phase === 'j-1') {
+    actions.push(
+      { id: 'email-rappel-j2', label: '📧 Rappel J-2 spectateurs', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'email-rappel-j1', label: '📧 Rappel J-1 spectateurs + artistes', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'email-brief', label: '📧 Brief equipe (C/S + bar)', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'ig-story-j1', label: '📸 Story IG : "C\'est demain !"', done: false, url: IG, category: 'instagram' },
+    );
+  }
+
+  // --- Phase SOIREE ---
+  if (phase === 'soiree' || phase === 'j-1') {
+    actions.push(
+      { id: 'checklist', label: '✅ Checklist Jour J (onglet Jour J)', done: false, url: null, category: 'jour-j' },
+      { id: 'ig-live', label: '📸 Story/live IG pendant le show', done: false, url: IG, category: 'instagram' },
+    );
+  }
+
+  // --- Phase BILAN ---
+  if (phase === 'bilan') {
+    actions.push(
+      { id: 'email-merci', label: '📧 Email merci spectateurs + chapeau', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'email-artistes-chapeau', label: '📧 Email artistes : bilan chapeau', done: false, url: HUBSPOT_EMAILS, category: 'email' },
+      { id: 'ig-post-recap', label: '📸 Post IG : recap + remerciements', done: false, url: IG, category: 'instagram' },
+      { id: 'paiements', label: '💰 Payer les artistes (onglet Paie)', done: false, url: null, category: 'paiement' },
+    );
+  }
+
+  // --- Toujours visible : lien CRM ---
+  if (!['archive', 'annule'].includes(phase)) {
+    actions.push({ id: 'hubspot', label: '🔗 Ouvrir HubSpot CRM', done: false, url: HUBSPOT_CRM, category: 'lien' });
   }
 
   return actions;

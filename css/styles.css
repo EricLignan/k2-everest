@@ -441,6 +441,19 @@ body {
 .action-clickable:active { opacity: 0.7; }
 .action-link { color: var(--accent-blue); font-size: 0.85rem; margin-left: auto; }
 
+.action-category { margin-bottom: 12px; }
+.action-cat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-blue);
+  font-weight: 700;
+  margin-bottom: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.action-category:first-child .action-cat-label { border-top: none; padding-top: 0; }
+
 .paiement-frozen { opacity: 0.6; pointer-events: none; }
 
 /* ===== CARD LIST ===== */

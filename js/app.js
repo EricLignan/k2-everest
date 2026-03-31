@@ -304,15 +304,30 @@ const App = (() => {
     if (closed) {
       actionsEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Session terminee — aucune action</p>';
     } else if (s.actions?.length) {
-      actionsEl.innerHTML = s.actions.map(a => {
-        const clickable = a.url ? ` onclick="window.open('${a.url}', '_blank')" style="cursor:pointer"` : '';
-        return `
-        <div class="action-item${a.url ? ' action-clickable' : ''}"${clickable}>
-          <div class="action-check ${a.done ? 'done' : ''}">${a.done ? '✓' : ''}</div>
-          <span>${a.label}</span>
-          ${a.url ? '<span class="action-link">↗</span>' : ''}
-        </div>`;
-      }).join('');
+      // Group by category
+      const categories = {};
+      s.actions.forEach(a => {
+        const cat = a.category || 'autre';
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(a);
+      });
+      const catLabels = {
+        setup: 'Preparation', email: 'Emails a envoyer', instagram: 'Instagram',
+        lineup: 'Lineup', 'jour-j': 'Jour J', paiement: 'Paiements', lien: 'Liens',
+      };
+      actionsEl.innerHTML = Object.entries(categories).map(([cat, items]) =>
+        `<div class="action-category">
+          <div class="action-cat-label">${catLabels[cat] || cat}</div>
+          ${items.map(a => {
+            const clickable = a.url ? ` onclick="window.open('${a.url}', '_blank')" style="cursor:pointer"` : '';
+            return `<div class="action-item${a.url ? ' action-clickable' : ''}"${clickable}>
+              <div class="action-check ${a.done ? 'done' : ''}">${a.done ? '✓' : ''}</div>
+              <span>${a.label}</span>
+              ${a.url ? '<span class="action-link">↗</span>' : ''}
+            </div>`;
+          }).join('')}
+        </div>`
+      ).join('');
     } else {
       actionsEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Aucune action en attente</p>';
     }
