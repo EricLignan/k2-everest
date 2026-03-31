@@ -437,11 +437,19 @@ async function handlePaiementsGet(url, env) {
     ? findSessionByDate(data.sessions, date) || findActiveSession(data.sessions)
     : findActiveSession(data.sessions);
 
-  // Try KV first (user-modified paiements)
+  // Try KV first (user-modified paiements) — but only if it has real data
   const stored = await env.K2_STATE.get(`paiements:${session?.date}`);
-  if (stored) return json(JSON.parse(stored));
+  if (stored) {
+    const kvData = JSON.parse(stored);
+    // Only use KV if it has actual artistes data (not empty from a bug)
+    if (kvData.artistes?.length > 0) {
+      return json(kvData);
+    }
+    // KV has empty data — delete it so sessions.json takes over
+    await env.K2_STATE.delete(`paiements:${session?.date}`);
+  }
 
-  // Fallback: from sessions.json
+  // From sessions.json (source of truth)
   return json({ artistes: session?.paiements || [] });
 }
 
