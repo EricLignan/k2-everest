@@ -67,6 +67,26 @@ export async function onRequest(context) {
       return json({ status: 'ok', timestamp: new Date().toISOString() });
     }
 
+    // Temporary debug endpoint — shows what data the Worker actually loads
+    if (path === '/api/debug') {
+      const data = await loadSessions(env);
+      const sessions = data.sessions || [];
+      return json({
+        sessions_count: sessions.length,
+        sessions: sessions.map(s => ({
+          date: s.date,
+          phase: s.phase,
+          lineup: s.lineup?.length || 0,
+          paiements: s.paiements?.length || 0,
+          remplacants: s.remplacants?.length || 0,
+          mc: s.mc || null,
+          has_ig: (s.lineup || []).filter(a => a.instagram).length,
+        })),
+        has_assets: !!env.ASSETS,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     if (path === '/api/auth' && request.method === 'POST') {
       return handleAuth(request, env);
     }
@@ -129,17 +149,35 @@ async function handleAuth(request, env) {
   return json({ token, role, expires: new Date(exp * 1000).toISOString() });
 }
 
-// ===== LOAD SESSIONS DATA (via ASSETS binding, no CDN cache issue) =====
+// ===== LOAD SESSIONS DATA =====
 async function loadSessions(env) {
-  // Use env.ASSETS to read static files directly (bypasses CDN cache)
+  // Strategy 1: ASSETS binding (direct, no CDN cache)
   try {
-    const res = await env.ASSETS.fetch(new URL('/data/sessions.json', 'https://k2-everest.pages.dev'));
-    if (!res.ok) return { sessions: [] };
-    return await res.json();
+    if (env.ASSETS) {
+      const res = await env.ASSETS.fetch(new Request('https://k2-everest.pages.dev/data/sessions.json'));
+      if (res.ok) {
+        const data = await res.json();
+        if (data.sessions?.length) return data;
+      }
+    }
   } catch (e) {
-    console.error('loadSessions error:', e);
-    return { sessions: [] };
+    // ASSETS failed, try fallback
   }
+
+  // Strategy 2: regular fetch with cache bypass
+  try {
+    const res = await fetch(`https://k2-everest.pages.dev/data/sessions.json`, {
+      headers: { 'Cache-Control': 'no-cache' },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.sessions?.length) return data;
+    }
+  } catch (e) {
+    // fetch also failed
+  }
+
+  return { sessions: [] };
 }
 
 function findActiveSession(sessions) {
