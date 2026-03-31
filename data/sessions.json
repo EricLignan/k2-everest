@@ -716,10 +716,10 @@
       ]
     },
     {
-      "date": "2026-04-08",
-      "jour": "mercredi",
+      "date": "2026-04-07",
+      "jour": "mardi",
       "heure": "19h30",
-      "phase": "init",
+      "phase": "dispos",
       "artistes_count": 0,
       "spectateurs": 0,
       "chapeau": 0,
@@ -732,5 +732,5 @@
       "paiements": []
     }
   ],
-  "generated": "2026-03-31T19:40:19.073010"
+  "generated": "2026-03-31T21:57:08.742819"
 }
