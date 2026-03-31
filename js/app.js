@@ -299,12 +299,15 @@ const App = (() => {
     if (closed) {
       actionsEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Session terminee — aucune action</p>';
     } else if (s.actions?.length) {
-      actionsEl.innerHTML = s.actions.map(a => `
-        <div class="action-item">
+      actionsEl.innerHTML = s.actions.map(a => {
+        const clickable = a.url ? ` onclick="window.open('${a.url}', '_blank')" style="cursor:pointer"` : '';
+        return `
+        <div class="action-item${a.url ? ' action-clickable' : ''}"${clickable}>
           <div class="action-check ${a.done ? 'done' : ''}">${a.done ? '✓' : ''}</div>
           <span>${a.label}</span>
-        </div>
-      `).join('');
+          ${a.url ? '<span class="action-link">↗</span>' : ''}
+        </div>`;
+      }).join('');
     } else {
       actionsEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Aucune action en attente</p>';
     }
@@ -329,7 +332,8 @@ const App = (() => {
 
     const remp = document.getElementById('lineup-remplacants');
     if (l.remplacants?.length) {
-      remp.innerHTML = l.remplacants.map(a => artistCard(a, true)).join('');
+      remp.innerHTML = `<h3 class="remplacants-title">Remplacants (${l.remplacants.length})</h3>` +
+        l.remplacants.map(a => artistCard(a, true, closed)).join('');
       remp.classList.remove('hidden');
     } else {
       remp.innerHTML = '';
@@ -362,25 +366,57 @@ const App = (() => {
         togglePresence(cb.dataset.checkin);
       });
     });
+
+    // MC toggle (long press on MC badge or name for admin)
+    if (API.getRole() === 'admin' && !closed) {
+      list.querySelectorAll('.artist-card').forEach(card => {
+        const name = card.dataset.artist;
+        const mcBadge = card.querySelector('.badge-mc');
+        const nameEl = card.querySelector('.artist-name');
+        // Double-tap on name to set as MC
+        let lastTap = 0;
+        nameEl?.addEventListener('click', (e) => {
+          const now = Date.now();
+          if (now - lastTap < 400) {
+            e.stopPropagation();
+            toggleMC(name);
+          }
+          lastTap = now;
+        });
+      });
+    }
   }
 
   function artistCard(a, isRemplacant = false, readonly = false) {
     const statusClass = a.present === true ? 'present' : a.present === false ? 'absent' : a.status || 'proposed';
     const statusLabel = a.present === true ? 'Present' : a.present === false ? 'Absent' :
-      a.status === 'confirmed' ? 'Confirme' : a.status === 'declined' ? 'Decline' : 'En attente';
+      a.status === 'confirmed' ? 'Confirme' : a.status === 'declined' ? 'Decline' :
+      a.status === 'replacement' ? 'Remplacant' : 'En attente';
     const isChecked = a.present === true;
 
+    // Instagram link (profile + DM)
+    const igLinks = a.instagram
+      ? `<a href="https://ig.me/m/${a.instagram}" class="artist-ig-link" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="DM Instagram">@${a.instagram}</a>`
+      : '';
+    const phoneLink = a.phone
+      ? `<a href="tel:${a.phone}" class="artist-phone" onclick="event.stopPropagation()" title="${a.phone}">📞</a>`
+      : '';
+
+    // Display name (nom de scene first, real name in smaller text)
+    const displayName = a.name || '?';
+    const realNameHint = a.real_name ? `<span class="artist-real-name">(${a.real_name})</span>` : '';
+
     return `
-      <div class="artist-card" data-artist="${a.name || ''}">
+      <div class="artist-card ${isRemplacant ? 'artist-remplacant' : ''}" data-artist="${a.name || ''}">
         <div class="checkin-checkbox ${isChecked ? 'checked' : ''} ${readonly ? 'readonly' : ''}" ${readonly ? '' : `data-checkin="${a.name || ''}" title="Marquer present/absent"`}>${isChecked ? '✓' : ''}</div>
         <div class="artist-order">${isRemplacant ? 'R' : a.order || '—'}</div>
         <div class="artist-info">
           <div class="artist-name">
-            ${a.name || a.nom_de_scene || '?'}
+            ${displayName} ${realNameHint}
             ${a.genre === 'F' ? '<span class="badge-genre">F</span>' : ''}
             ${a.is_mc ? '<span class="badge-mc">MC</span>' : ''}
           </div>
-          <div class="artist-ig">${a.instagram ? '@' + a.instagram : ''}${a.phone ? ` <a href="tel:${a.phone}" class="artist-phone" onclick="event.stopPropagation()">📞</a>` : ''}</div>
+          <div class="artist-contacts">${igLinks}${igLinks && phoneLink ? ' ' : ''}${phoneLink}</div>
         </div>
         <span class="status-pill status-${statusClass}">${statusLabel}</span>
         ${a.dm_text ? `<button class="btn-copy-dm" data-dm="${escapeAttr(a.dm_text)}" title="Copier DM">📋</button>` : ''}
@@ -393,7 +429,6 @@ const App = (() => {
     const date = state.session?.date;
     if (!date) return;
 
-    // Find current state
     const artist = state.lineup?.artistes?.find(a => a.name === artistName);
     if (!artist) return;
 
@@ -403,6 +438,21 @@ const App = (() => {
 
     await API.post('/api/checkin', { date, artiste: artistName, present: newPresent });
     toast(newPresent ? `${artistName} present` : `${artistName} absent`);
+  }
+
+  async function toggleMC(artistName) {
+    if (API.getRole() !== 'admin') return;
+    const date = state.session?.date;
+    if (!date) return;
+
+    await API.post('/api/mc', { date, artiste: artistName });
+    // Update local state
+    if (state.session) state.session.mc = artistName;
+    if (state.lineup?.artistes) {
+      state.lineup.artistes.forEach(a => { a.is_mc = (a.name === artistName); });
+    }
+    renderLineup();
+    toast(`${artistName} est maintenant MC`);
   }
 
   // ===== RENDER: STATS =====
@@ -598,9 +648,12 @@ const App = (() => {
       <div class="metric-label">par artiste</div>
     `;
 
+    const closed = isSessionClosed(state.session);
+    const allPaid = p.artistes.every(a => a.paye);
+
     const list = document.getElementById('paiements-list');
     list.innerHTML = p.artistes.map(a => `
-      <div class="paiement-card" data-artist="${a.name}">
+      <div class="paiement-card ${closed && allPaid ? 'paiement-frozen' : ''}" data-artist="${a.name}">
         <div class="paiement-info">
           <div class="paiement-name">${a.name}</div>
           <div class="paiement-mode">${a.mode || '?'} ${a.date_paiement ? '— ' + a.date_paiement : ''}</div>
@@ -610,8 +663,8 @@ const App = (() => {
       </div>
     `).join('');
 
-    // Click to toggle paid (admin only)
-    if (API.getRole() === 'admin') {
+    // Click to toggle paid (admin only, not for fully-paid closed sessions)
+    if (API.getRole() === 'admin' && !(closed && allPaid)) {
       list.querySelectorAll('.paiement-card').forEach(card => {
         card.addEventListener('click', () => togglePaiement(card.dataset.artist));
       });

@@ -1,18 +1,252 @@
 {
   "sessions": [
     {
+      "date": "2026-02-18",
+      "jour": "mercredi",
+      "heure": "19h30",
+      "phase": "annule",
+      "artistes_count": 0,
+      "spectateurs": 0,
+      "chapeau": 0,
+      "parity_pct": 0,
+      "annulee": true,
+      "mc": null,
+      "notes": "Session annulee — bar exceptionnellement ferme. Artistes a reprogrammer. Lineup etait 100% masculin.",
+      "lineup": [
+        {
+          "name": "Stephane Dolbachian",
+          "real_name": null,
+          "hubspot_id": "699863432423",
+          "instagram": "Stef_stand",
+          "phone": "+33760971448",
+          "genre": "H",
+          "order": 1,
+          "status": "cancelled_session",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Elias Bouhaddi",
+          "real_name": null,
+          "hubspot_id": "699254923479",
+          "instagram": "elias.hanafi",
+          "phone": "+33620291142",
+          "genre": "H",
+          "order": 2,
+          "status": "cancelled_session",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Amin Iamarene",
+          "real_name": null,
+          "hubspot_id": "699245151447",
+          "instagram": "amin_iamarene",
+          "phone": "0608890057",
+          "genre": "H",
+          "order": 3,
+          "status": "cancelled_session",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Kavi Art",
+          "real_name": null,
+          "hubspot_id": "699345549554",
+          "instagram": "kavi_art____",
+          "phone": "+33661871442",
+          "genre": "H",
+          "order": 4,
+          "status": "cancelled_session",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Thomas Ramond",
+          "real_name": null,
+          "hubspot_id": "699248025828",
+          "instagram": "Jd_sur_scene",
+          "phone": "+33642940138",
+          "genre": "H",
+          "order": 5,
+          "status": "cancelled_session",
+          "is_mc": false,
+          "primo": true
+        }
+      ],
+      "remplacants": [
+        {
+          "name": "Paul Guerin",
+          "hubspot_id": "699287717075",
+          "instagram": "Paul_guerin__",
+          "phone": "+33615691033",
+          "genre": "H",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        }
+      ],
+      "paiements": []
+    },
+    {
       "date": "2026-02-24",
       "jour": "mardi",
       "heure": "19h30",
       "phase": "archive",
-      "artistes_count": 6,
+      "artistes_count": 0,
       "spectateurs": 18,
       "chapeau": 45,
-      "parity_pct": 50,
+      "parity_pct": 0,
       "annulee": false,
       "mc": null,
-      "notes": "Lineup 50% parite (3F/3H)",
-      "lineup": [],
+      "notes": "Lineup 50% parite (3F/3H). Premiere session Comedy Club Everest.",
+      "lineup": [
+        {
+          "name": "Maxime Beaugendre",
+          "real_name": null,
+          "hubspot_id": "699417351391",
+          "instagram": "maxime_experimente",
+          "phone": "+33658527128",
+          "genre": "H",
+          "order": 1,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Alice Jacquot",
+          "real_name": null,
+          "hubspot_id": "699249495256",
+          "instagram": "alice.joue",
+          "phone": "+33612107382",
+          "genre": "F",
+          "order": 2,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Kevin Reeb",
+          "real_name": null,
+          "hubspot_id": "503369105643",
+          "instagram": null,
+          "phone": "+33630829429",
+          "genre": "H",
+          "order": 3,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Eddie CuDi",
+          "real_name": null,
+          "hubspot_id": "699255876831",
+          "instagram": null,
+          "phone": "+33623493590",
+          "genre": "H",
+          "order": 4,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Laura Mougenot",
+          "real_name": null,
+          "hubspot_id": "699583901914",
+          "instagram": null,
+          "phone": "+33684212690",
+          "genre": "F",
+          "order": 5,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Pachna",
+          "real_name": null,
+          "hubspot_id": "699254588610",
+          "instagram": "pachna.m",
+          "phone": "+33784445194",
+          "genre": "F",
+          "order": 6,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Iris Drigé",
+          "real_name": null,
+          "hubspot_id": "699248745660",
+          "instagram": null,
+          "phone": "+33664615543",
+          "genre": "F",
+          "order": 7,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Victor Salomon",
+          "real_name": null,
+          "hubspot_id": "699265113320",
+          "instagram": null,
+          "phone": "+33659278971",
+          "genre": "H",
+          "order": 8,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Nathan Bel",
+          "real_name": null,
+          "hubspot_id": "699271330026",
+          "instagram": null,
+          "phone": "+33644015020",
+          "genre": "H",
+          "order": 9,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Anne Corte",
+          "real_name": null,
+          "hubspot_id": "700030193912",
+          "instagram": "Corte_culte",
+          "phone": "+33782320242",
+          "genre": "F",
+          "order": 10,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        }
+      ],
+      "remplacants": [
+        {
+          "name": "Laure Beauvois",
+          "hubspot_id": "699256881373",
+          "instagram": null,
+          "phone": "+33629037933",
+          "genre": "F",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Benjamin Fosca",
+          "hubspot_id": "699338535119",
+          "instagram": null,
+          "phone": "+33676087411",
+          "genre": "H",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        }
+      ],
       "paiements": []
     },
     {
@@ -21,35 +255,218 @@
       "heure": "19h30",
       "phase": "archive",
       "artistes_count": 10,
-      "spectateurs": 25,
+      "spectateurs": 12,
       "chapeau": 94,
       "parity_pct": 20,
       "annulee": false,
       "mc": null,
-      "notes": "10/10 artistes. Decale du mercredi (PSG). Chapeau 94 EUR (54 esp + 20 Lydia + 20 Wero).",
+      "notes": "Pas de video mais photos. Certains comediens demandent paiement Wero.",
       "lineup": [
-        { "name": "Quentin Montaclair", "instagram": "quentin.monta", "phone": "+33618747373", "genre": "H", "order": 1, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Emile Rock", "instagram": null, "phone": "+33769118984", "genre": "H", "order": 2, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Iris Drige", "instagram": null, "phone": "+33664615543", "genre": "F", "order": 3, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Thomas Ramond", "instagram": "jd_sur_scene", "phone": "+33642940138", "genre": "H", "order": 4, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Robin Clouard", "instagram": "robinclouard", "phone": "+33610920522", "genre": "H", "order": 5, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Casimir Lissowski", "instagram": null, "phone": "+33684952602", "genre": "H", "order": 6, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Gabii Gabriel", "instagram": "gabii", "phone": null, "genre": "H", "order": 7, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Jakem", "instagram": "jakem.desso", "phone": "+33636807143", "genre": "H", "order": 8, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Fafou", "instagram": "fafouquoila", "phone": null, "genre": "F", "order": 9, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Fabregaz", "instagram": "fabricequenum__", "phone": "+33687398007", "genre": "H", "order": 10, "status": "confirmed", "is_mc": false, "primo": false }
+        {
+          "name": "Quentin Montaclair",
+          "real_name": null,
+          "hubspot_id": "699287714032",
+          "instagram": "quentin.monta",
+          "phone": "+33618747373",
+          "genre": "H",
+          "order": 1,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Émile Rock",
+          "real_name": null,
+          "hubspot_id": "699313676536",
+          "instagram": null,
+          "phone": "+33769118984",
+          "genre": "H",
+          "order": 2,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Iris Drigé",
+          "real_name": null,
+          "hubspot_id": "699248745660",
+          "instagram": null,
+          "phone": "+33664615543",
+          "genre": "F",
+          "order": 3,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Thomas Ramond",
+          "real_name": null,
+          "hubspot_id": "699248025828",
+          "instagram": null,
+          "phone": "+33642940138",
+          "genre": "H",
+          "order": 4,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Robin Clouard",
+          "real_name": null,
+          "hubspot_id": "699291354318",
+          "instagram": null,
+          "phone": "+33610920522",
+          "genre": "H",
+          "order": 5,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Casimir Lissowski",
+          "real_name": null,
+          "hubspot_id": "699283801300",
+          "instagram": null,
+          "phone": "+33684952602",
+          "genre": "H",
+          "order": 6,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Gabii Gabriel",
+          "real_name": null,
+          "hubspot_id": "699264620744",
+          "instagram": "gabii",
+          "phone": null,
+          "genre": "H",
+          "order": 7,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Jakem",
+          "real_name": null,
+          "hubspot_id": "699340090591",
+          "instagram": "jakem.desso",
+          "phone": "+33636807143",
+          "genre": "H",
+          "order": 8,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Fafou",
+          "real_name": null,
+          "hubspot_id": "707849671897",
+          "instagram": "fafouquoila",
+          "phone": null,
+          "genre": "F",
+          "order": 9,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Fabregaz",
+          "real_name": null,
+          "hubspot_id": "699254944986",
+          "instagram": "fabricequenum__",
+          "phone": "+33687398007",
+          "genre": "H",
+          "order": 10,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        }
+      ],
+      "remplacants": [
+        {
+          "name": "Guarani Feitosa",
+          "hubspot_id": "702774903021",
+          "instagram": null,
+          "phone": "+33620720699",
+          "genre": "H",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        }
       ],
       "paiements": [
-        { "name": "Quentin Montaclair", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
-        { "name": "Emile Rock", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
-        { "name": "Iris Drige", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-14" },
-        { "name": "Thomas Ramond", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-27" },
-        { "name": "Robin Clouard", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
-        { "name": "Casimir Lissowski", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-14" },
-        { "name": "Gabii Gabriel", "montant": 8.46, "mode": "virement", "paye": true, "date_paiement": "2026-03-24" },
-        { "name": "Jakem", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-18" },
-        { "name": "Fafou", "montant": 8.46, "mode": "lydia", "paye": true, "date_paiement": "2026-03-15" },
-        { "name": "Fabregaz", "montant": 8.46, "mode": "wero", "paye": true, "date_paiement": "2026-03-14" }
+        {
+          "name": "Quentin Montaclair",
+          "montant": 8.46,
+          "mode": "lydia",
+          "paye": true,
+          "date_paiement": "2026-03-15"
+        },
+        {
+          "name": "Émile Rock",
+          "montant": 8.46,
+          "mode": "lydia",
+          "paye": true,
+          "date_paiement": "2026-03-15"
+        },
+        {
+          "name": "Iris Drigé",
+          "montant": 8.46,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-14"
+        },
+        {
+          "name": "Thomas Ramond",
+          "montant": 8.46,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-27"
+        },
+        {
+          "name": "Robin Clouard",
+          "montant": 8.46,
+          "mode": "lydia",
+          "paye": true,
+          "date_paiement": "2026-03-15"
+        },
+        {
+          "name": "Casimir Lissowski",
+          "montant": 8.46,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-14"
+        },
+        {
+          "name": "Gabii Gabriel",
+          "montant": 8.46,
+          "mode": "virement",
+          "paye": true,
+          "date_paiement": "2026-03-24"
+        },
+        {
+          "name": "Jakem",
+          "montant": 8.46,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-18"
+        },
+        {
+          "name": "Fafou",
+          "montant": 8.46,
+          "mode": "lydia",
+          "paye": true,
+          "date_paiement": "2026-03-15"
+        },
+        {
+          "name": "Fabregaz",
+          "montant": 8.46,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-14"
+        }
       ]
     },
     {
@@ -63,39 +480,244 @@
       "parity_pct": 17,
       "annulee": false,
       "mc": "Eddie CuDi",
-      "notes": "12 artistes presents. Premiere session modele pull (dispos via formulaire).",
+      "notes": "8 spectateurs (4 inscrits via formulaire, 4 sur place). Premiere session modele pull (dispos via formulaire).",
       "lineup": [
-        { "name": "Maxime Beaugendre", "instagram": "maxime_experimente", "phone": "+33658527128", "genre": "H", "order": 1, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Stephane Dolbachian", "instagram": "Stef_stand", "phone": "+33760971448", "genre": "H", "order": 2, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Eddie CuDi", "instagram": "eddiecudi", "phone": "+33623493590", "genre": "H", "order": 3, "status": "confirmed", "is_mc": true, "primo": false },
-        { "name": "Maxime Farrayre", "instagram": null, "phone": "+33658859790", "genre": "H", "order": 4, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Pierre Sabik", "instagram": "lejokari", "phone": "+33686843369", "genre": "H", "order": 6, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Violaine de Pins", "instagram": null, "phone": null, "genre": "F", "order": 7, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Plante Aquatique", "instagram": null, "phone": "+33768095294", "genre": "H", "order": 8, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "Thibault Curatolo", "instagram": null, "phone": null, "genre": "H", "order": 9, "status": "confirmed", "is_mc": false, "primo": true },
-        { "name": "JD", "instagram": "jd_sur_scene", "phone": "+33642940138", "genre": "H", "order": 10, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Jakem", "instagram": "jakem.desso", "phone": "+33636807143", "genre": "H", "order": 12, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Casimir Lissowski", "instagram": null, "phone": "+33684952602", "genre": "H", "order": 13, "status": "confirmed", "is_mc": false, "primo": false },
-        { "name": "Helios", "instagram": null, "phone": null, "genre": "F", "order": 14, "status": "confirmed", "is_mc": false, "primo": true }
+        {
+          "name": "Maxime Beaugendre",
+          "real_name": null,
+          "hubspot_id": "699417351391",
+          "instagram": "maxime_experimente",
+          "phone": "+33658527128",
+          "genre": "H",
+          "order": 1,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Stephane Dolbachian",
+          "real_name": null,
+          "hubspot_id": "699863432423",
+          "instagram": "Stef_stand",
+          "phone": "+33760971448",
+          "genre": "H",
+          "order": 2,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Eddie CuDi",
+          "real_name": null,
+          "hubspot_id": "699255876831",
+          "instagram": "eddiecudi",
+          "phone": "+33623493590",
+          "genre": "H",
+          "order": 3,
+          "status": "confirmed",
+          "is_mc": true,
+          "primo": true
+        },
+        {
+          "name": "Maxime Farrayre",
+          "real_name": null,
+          "hubspot_id": "700030637250",
+          "instagram": null,
+          "phone": null,
+          "genre": "H",
+          "order": 4,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Pierre Sabik",
+          "real_name": null,
+          "hubspot_id": "702710075603",
+          "instagram": "lejokari",
+          "phone": "+33686843369",
+          "genre": "H",
+          "order": 6,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Violaine de Pins",
+          "real_name": null,
+          "hubspot_id": "699543630052",
+          "instagram": null,
+          "phone": null,
+          "genre": "F",
+          "order": 7,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Plante Aquatique",
+          "real_name": "Younes Touta",
+          "hubspot_id": "700025868487",
+          "instagram": null,
+          "phone": null,
+          "genre": "H",
+          "order": 8,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Thibault Curatolo",
+          "real_name": null,
+          "hubspot_id": "735407848646",
+          "instagram": null,
+          "phone": null,
+          "genre": "H",
+          "order": 9,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "JD",
+          "real_name": "Thomas Ramond",
+          "hubspot_id": "699248025828",
+          "instagram": "jd_sur_scene",
+          "phone": "+33642940138",
+          "genre": "H",
+          "order": 10,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Jakem",
+          "real_name": "Jacques Emmanuel Mercier",
+          "hubspot_id": "699340090591",
+          "instagram": "jakem.desso",
+          "phone": "+33636807143",
+          "genre": "H",
+          "order": 12,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Casimir Lissowski",
+          "real_name": null,
+          "hubspot_id": "699283801300",
+          "instagram": null,
+          "phone": "+33684952602",
+          "genre": "H",
+          "order": 13,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Hélios",
+          "real_name": "Léa Nouchi",
+          "hubspot_id": "734696983771",
+          "instagram": null,
+          "phone": null,
+          "genre": "F",
+          "order": 14,
+          "status": "confirmed",
+          "is_mc": false,
+          "primo": true
+        }
       ],
+      "remplacants": [],
       "paiements": [
-        { "name": "Maxime Beaugendre", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Stephane Dolbachian", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Eddie CuDi", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Maxime Farrayre", "montant": 5.03, "mode": "lydia", "paye": true, "date_paiement": "2026-03-30" },
-        { "name": "Pierre Sabik", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Violaine de Pins", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Plante Aquatique", "montant": 5.03, "mode": "lydia", "paye": true, "date_paiement": "2026-03-30" },
-        { "name": "Thibault Curatolo", "montant": 5.03, "mode": "wero", "paye": false, "date_paiement": null },
-        { "name": "JD", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Jakem", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Casimir Lissowski", "montant": 5.03, "mode": "wero", "paye": true, "date_paiement": "2026-03-29" },
-        { "name": "Helios", "montant": 5.03, "mode": "virement", "paye": true, "date_paiement": "2026-03-29" }
+        {
+          "name": "Maxime Beaugendre",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Stephane Dolbachian",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Eddie CuDi",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Maxime Farrayre",
+          "montant": 5.03,
+          "mode": "lydia",
+          "paye": false,
+          "date_paiement": null
+        },
+        {
+          "name": "Pierre Sabik",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Violaine de Pins",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Plante Aquatique",
+          "montant": 5.03,
+          "mode": "lydia",
+          "paye": false,
+          "date_paiement": null
+        },
+        {
+          "name": "Thibault Curatolo",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": false,
+          "date_paiement": null
+        },
+        {
+          "name": "JD",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Jakem",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Casimir Lissowski",
+          "montant": 5.03,
+          "mode": "wero",
+          "paye": true,
+          "date_paiement": "2026-03-29"
+        },
+        {
+          "name": "Hélios",
+          "montant": 5.03,
+          "mode": "?",
+          "paye": false,
+          "date_paiement": null
+        }
       ]
     },
     {
       "date": "2026-04-08",
-      "jour": "mardi",
+      "jour": "mercredi",
       "heure": "19h30",
       "phase": "init",
       "artistes_count": 0,
@@ -104,9 +726,11 @@
       "parity_pct": 0,
       "annulee": false,
       "mc": null,
-      "notes": "Prochaine session a planifier",
+      "notes": "",
       "lineup": [],
+      "remplacants": [],
       "paiements": []
     }
-  ]
+  ],
+  "generated": "2026-03-31T18:25:19.390844"
 }

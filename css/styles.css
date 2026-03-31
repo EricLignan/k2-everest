@@ -433,6 +433,12 @@ body {
   color: white;
 }
 
+.action-clickable { cursor: pointer; }
+.action-clickable:active { opacity: 0.7; }
+.action-link { color: var(--accent-blue); font-size: 0.85rem; margin-left: auto; }
+
+.paiement-frozen { opacity: 0.6; pointer-events: none; }
+
 /* ===== CARD LIST ===== */
 .view-header {
   display: flex;
@@ -502,6 +508,40 @@ body {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+.artist-contacts {
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.artist-ig-link {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+.artist-ig-link:hover { text-decoration: underline; }
+
+.artist-real-name {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.artist-remplacant {
+  border-left: 3px solid var(--accent-orange);
+  opacity: 0.85;
+}
+
+.remplacants-title {
+  font-size: 0.85rem;
+  color: var(--accent-orange);
+  margin: 12px 0 6px;
+  font-weight: 600;
+}
+
+.status-replacement { background: #fd7e1420; color: var(--accent-orange); }
 
 .badge-genre {
   font-size: 0.65rem;

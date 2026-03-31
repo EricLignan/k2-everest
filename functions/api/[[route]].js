@@ -31,7 +31,7 @@ async function verifyJWT(token, secret) {
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 }
 
@@ -57,7 +57,6 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // OPTIONS preflight — Pages handles CORS, but just in case
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204 });
   }
@@ -95,6 +94,7 @@ export async function onRequest(context) {
     if (path === '/api/paiements') {
       return request.method === 'POST' ? handlePaiementsPost(request, env, payload) : handlePaiementsGet(url, env);
     }
+    if (path === '/api/mc') return handleMcToggle(request, env, payload);
 
     return json({ error: 'Route inconnue' }, 404);
   } catch (err) {
@@ -129,26 +129,43 @@ async function handleAuth(request, env) {
   return json({ token, role, expires: new Date(exp * 1000).toISOString() });
 }
 
-// ===== LOAD SESSIONS DATA =====
-async function loadSessions() {
+// ===== LOAD SESSIONS DATA (with KV cache) =====
+const CACHE_KEY = 'sessions_cache';
+const CACHE_TTL = 300; // 5 min
+
+async function loadSessions(env, noCache = false) {
+  // Try KV cache first
+  if (!noCache) {
+    const cached = await env.K2_STATE.get(CACHE_KEY, 'json');
+    if (cached) return cached;
+  }
+
+  // Fallback: read static sessions.json from same origin
   const res = await fetch(new URL('/data/sessions.json', 'https://k2-everest.pages.dev'));
   if (!res.ok) return { sessions: [] };
-  return res.json();
+  const data = await res.json();
+
+  // Cache in KV
+  await env.K2_STATE.put(CACHE_KEY, JSON.stringify(data), { expirationTtl: CACHE_TTL });
+  return data;
 }
 
 function findActiveSession(sessions) {
-  // Find the latest non-archive, non-annule session; fallback to latest
   const active = sessions.filter(s => !['archive', 'annule'].includes(s.phase));
   if (active.length > 0) return active[active.length - 1];
   return sessions[sessions.length - 1];
 }
 
+function findSessionByDate(sessions, date) {
+  return sessions.find(s => s.date === date);
+}
+
 // ===== SESSION =====
 async function handleSession(env, url) {
-  const data = await loadSessions();
+  const data = await loadSessions(env);
   const requestedDate = url?.searchParams?.get('date');
   const session = requestedDate
-    ? data.sessions.find(s => s.date === requestedDate) || findActiveSession(data.sessions)
+    ? findSessionByDate(data.sessions, requestedDate) || findActiveSession(data.sessions)
     : findActiveSession(data.sessions);
 
   if (!session) return json({ error: 'Aucune session trouvee', phase: 'init' });
@@ -167,13 +184,17 @@ async function handleSession(env, url) {
   const checklistItems = checklistStored ? JSON.parse(checklistStored) : DEFAULT_CHECKLIST;
   const checklistDone = checklistItems.filter(i => i.done).length;
 
+  // Read MC override from KV (toggle MC feature)
+  const mcOverride = await env.K2_STATE.get(`mc:${session.date}`);
+  const mc = mcOverride || session.mc || null;
+
   return json({
     date: session.date,
     jour: session.jour,
     heure: session.heure,
     phase: session.phase,
     j_minus: jMinus,
-    mc: session.mc || null,
+    mc,
     lineup_count: confirmed.length,
     lineup_target: 10,
     spectateurs_inscrits: session.spectateurs || 0,
@@ -186,28 +207,53 @@ async function handleSession(env, url) {
 }
 
 function buildActions(session) {
+  const phase = session.phase;
   const actions = [];
-  if (!session.lineup?.length) actions.push({ id: 'dispos', label: 'Collecter les disponibilites', done: false });
-  if (!session.lineup?.length) actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: false });
-  else actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: true });
-  const emailSent = session.phase !== 'init' && session.phase !== 'dispos';
-  actions.push({ id: 'email_confirm', label: 'Envoyer email confirmation', done: emailSent });
+
+  if (phase === 'init') {
+    actions.push({ id: 'dispos', label: 'Collecter les disponibilites', done: false, url: null });
+  }
+  if (!session.lineup?.length) {
+    actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: false, url: null });
+  } else {
+    actions.push({ id: 'lineup', label: 'Selectionner le lineup', done: true, url: null });
+  }
+
+  const pending = (session.lineup || []).filter(a => a.status !== 'confirmed' && a.status !== 'declined');
+  if (pending.length > 0) {
+    actions.push({ id: 'confirm', label: `Confirmer ${pending.length} artiste(s)`, done: false, url: null });
+  }
+
+  if (['booking', 'annonce', 'soiree'].includes(phase)) {
+    actions.push({
+      id: 'hubspot',
+      label: 'Voir le CRM HubSpot',
+      done: false,
+      url: 'https://app-eu1.hubspot.com/contacts/143993525/objects/0-1/views/all/list',
+    });
+  }
+
   return actions;
 }
 
 // ===== LINEUP =====
 async function handleLineup(url, env) {
-  const data = await loadSessions();
+  const data = await loadSessions(env);
   const date = url.searchParams.get('date');
   const session = date
-    ? data.sessions.find(s => s.date === date) || findActiveSession(data.sessions)
+    ? findSessionByDate(data.sessions, date) || findActiveSession(data.sessions)
     : findActiveSession(data.sessions);
 
   if (!session) return json({ date, artistes: [], remplacants: [], parity_pct: 0, confirmed_count: 0, target: 10 });
 
+  // Read MC override from KV
+  const mcOverride = await env.K2_STATE.get(`mc:${session.date}`);
+  const mc = mcOverride || session.mc || null;
+
   const artistes = (session.lineup || []).map(a => ({
     ...a,
-    dm_text: `Salut ${a.name} ! Tu es confirme(e) pour le Comedy Club Everest !\n${session.jour} ${session.date} a ${session.heure}\nL'Everest Bar Beaubourg\nPassage #${a.order}\nArrive vers 19h00 pour le briefing.\nA bientot !`,
+    is_mc: a.is_mc || a.name === mc,
+    dm_text: buildDmText(a, session),
   }));
 
   // Load pointage from KV
@@ -220,14 +266,26 @@ async function handleLineup(url, env) {
   const confirmed = artistes.filter(a => a.status === 'confirmed');
   const femmes = confirmed.filter(a => a.genre === 'F');
 
+  // Remplacants with phone/instagram
+  const remplacants = (session.remplacants || []).map(r => ({
+    ...r,
+    dm_text: buildDmText(r, session, true),
+  }));
+
   return json({
     date: session.date,
     artistes,
-    remplacants: [],
+    remplacants,
     parity_pct: confirmed.length > 0 ? Math.round(femmes.length / confirmed.length * 100) : 0,
     confirmed_count: confirmed.length,
     target: 10,
   });
+}
+
+function buildDmText(artist, session, isRemplacant = false) {
+  const name = artist.name || '?';
+  const prefix = isRemplacant ? '(Remplacant) ' : '';
+  return `Salut ${name} ! ${prefix}Tu es confirme(e) pour le Comedy Club Everest !\n${session.jour || ''} ${session.date} a ${session.heure || '19h30'}\nL'Everest Bar Beaubourg\n${artist.order ? 'Passage #' + artist.order + '\n' : ''}Arrive vers 19h00 pour le briefing.\nA bientot !`;
 }
 
 // ===== SPECTATEURS =====
@@ -237,19 +295,26 @@ async function handleSpectateurs(env) {
 
 // ===== STATS =====
 async function handleStats(env) {
-  const data = await loadSessions();
+  const data = await loadSessions(env);
   const validSessions = data.sessions.filter(s => !s.annulee && s.phase !== 'init');
+
+  // Count unique artists across all sessions
+  const artistSet = new Set();
+  data.sessions.forEach(s => {
+    (s.lineup || []).forEach(a => {
+      if (a.status === 'confirmed') artistSet.add(a.name);
+    });
+  });
 
   const totals = {
     sessions_count: validSessions.length,
     avg_spectateurs: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.spectateurs || 0), 0) / validSessions.length) : 0,
     avg_chapeau: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.chapeau || 0), 0) / validSessions.length) : 0,
     avg_parity: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.parity_pct || 0), 0) / validSessions.length) : 0,
-    total_artistes_uniques: 28,
+    total_artistes_uniques: artistSet.size,
     trend_spectateurs_pct: 0,
   };
 
-  // Calculate trend (last vs previous)
   if (validSessions.length >= 2) {
     const last = validSessions[validSessions.length - 1].spectateurs || 0;
     const prev = validSessions[validSessions.length - 2].spectateurs || 1;
@@ -261,7 +326,8 @@ async function handleStats(env) {
 
 // ===== CHECKLIST =====
 async function handleChecklistGet(url, env) {
-  const date = url.searchParams.get('date') || '2026-04-08';
+  const data = await loadSessions(env);
+  const date = url.searchParams.get('date') || findActiveSession(data.sessions)?.date || '2026-04-08';
   const stored = await env.K2_STATE.get(`checklist:${date}`);
   return json({ items: stored ? JSON.parse(stored) : DEFAULT_CHECKLIST });
 }
@@ -301,44 +367,67 @@ async function handleCheckin(request, env, payload) {
 async function handleChapeau(request, env, payload) {
   if (payload.role !== 'admin') return json({ error: 'Admin requis' }, 403);
 
-  const { date, total, nb_artistes } = await request.json();
+  const { date, total, nb_artistes, especes, numerique } = await request.json();
   if (!date || !total || !nb_artistes) return json({ error: 'date, total et nb_artistes requis' }, 400);
 
   const caisse = Math.round(total * 0.1 * 100) / 100;
   const parArtiste = Math.round((total * 0.9 / nb_artistes) * 100) / 100;
-  const chapeau = { total, nb_artistes, caisse_solidarite: caisse, par_artiste: parArtiste };
+  const chapeau = { total, nb_artistes, caisse_solidarite: caisse, par_artiste: parArtiste, especes: especes || 0, numerique: numerique || 0 };
   await env.K2_STATE.put(`chapeau:${date}`, JSON.stringify(chapeau));
   return json({ ok: true, ...chapeau });
 }
 
 // ===== PAIEMENTS =====
 async function handlePaiementsGet(url, env) {
+  const data = await loadSessions(env);
   const date = url.searchParams.get('date');
-  const stored = await env.K2_STATE.get(`paiements:${date}`);
+  const session = date
+    ? findSessionByDate(data.sessions, date) || findActiveSession(data.sessions)
+    : findActiveSession(data.sessions);
+
+  // Try KV first (user-modified paiements)
+  const stored = await env.K2_STATE.get(`paiements:${session?.date}`);
   if (stored) return json(JSON.parse(stored));
 
-  // Fallback: read from sessions.json
-  const data = await loadSessions();
-  const session = date
-    ? data.sessions.find(s => s.date === date) || findActiveSession(data.sessions)
-    : findActiveSession(data.sessions);
+  // Fallback: from sessions.json
   return json({ artistes: session?.paiements || [] });
 }
 
 async function handlePaiementsPost(request, env, payload) {
   if (payload.role !== 'admin') return json({ error: 'Admin requis' }, 403);
 
-  const { date, artiste, paye } = await request.json();
+  const { date, artiste, paye, mode } = await request.json();
   if (!date || !artiste) return json({ error: 'date et artiste requis' }, 400);
 
   const key = `paiements:${date}`;
   const stored = await env.K2_STATE.get(key);
-  const data = stored ? JSON.parse(stored) : { artistes: [] };
+  let data;
+  if (stored) {
+    data = JSON.parse(stored);
+  } else {
+    // Initialize from sessions.json
+    const sessionsData = await loadSessions(env);
+    const session = findSessionByDate(sessionsData.sessions, date) || {};
+    data = { artistes: session.paiements || [] };
+  }
+
   const art = data.artistes.find(a => a.name === artiste);
   if (art) {
     art.paye = !!paye;
     art.date_paiement = paye ? new Date().toISOString().slice(0, 10) : null;
+    if (mode) art.mode = mode;
   }
   await env.K2_STATE.put(key, JSON.stringify(data));
   return json({ ok: true });
+}
+
+// ===== MC TOGGLE =====
+async function handleMcToggle(request, env, payload) {
+  if (request.method !== 'POST') return json({ error: 'POST requis' }, 405);
+
+  const { date, artiste } = await request.json();
+  if (!date || !artiste) return json({ error: 'date et artiste requis' }, 400);
+
+  await env.K2_STATE.put(`mc:${date}`, artiste);
+  return json({ ok: true, mc: artiste });
 }
