@@ -239,6 +239,7 @@ async function handleSession(env, url) {
     jour: session.jour,
     heure: session.heure,
     phase: session.phase,
+    annulee: session.annulee || false,
     j_minus: jMinus,
     mc,
     lineup_count: confirmed.length,
@@ -246,6 +247,8 @@ async function handleSession(env, url) {
     spectateurs_inscrits: session.spectateurs || 0,
     parity_pct: confirmed.length > 0 ? Math.round(femmes.length / confirmed.length * 100) : 0,
     primo_count: primos.length,
+    chapeau: session.chapeau || 0,
+    notes: session.notes || '',
     checklist: { done: checklistDone, total: checklistItems.length },
     actions: buildActions(session),
     last_updated: new Date().toISOString(),
@@ -400,20 +403,43 @@ async function handleSpectateurs(env) {
 // ===== STATS =====
 async function handleStats(env) {
   const data = await loadSessions(env);
-  const validSessions = data.sessions.filter(s => !s.annulee && s.phase !== 'init');
+  const allSessions = data.sessions || [];
+  const validSessions = allSessions.filter(s => !s.annulee && s.phase !== 'init');
 
-  // Count unique artists across all sessions
+  // Count unique artists
   const artistSet = new Set();
-  data.sessions.forEach(s => {
+  allSessions.forEach(s => {
     (s.lineup || []).forEach(a => {
       if (a.status === 'confirmed') artistSet.add(a.name);
     });
   });
 
+  // Chapeau evolution per session
+  let totalRedistribue = 0;
+  let totalCaisse = 0;
+  const chapeauHistory = validSessions.map(s => {
+    const chapeau = s.chapeau || 0;
+    const nbArtistes = (s.lineup || []).filter(a => a.status === 'confirmed').length;
+    const caisse = Math.round(chapeau * 0.1 * 100) / 100;
+    const redistribue = Math.round(chapeau * 0.9 * 100) / 100;
+    const parArtiste = nbArtistes > 0 ? Math.round(redistribue / nbArtistes * 100) / 100 : 0;
+    totalRedistribue += redistribue;
+    totalCaisse += caisse;
+    return {
+      date: s.date, chapeau, caisse, redistribue, parArtiste, nbArtistes,
+      spectateurs: s.spectateurs || 0,
+    };
+  });
+
   const totals = {
     sessions_count: validSessions.length,
+    sessions_annulees: allSessions.filter(s => s.annulee).length,
     avg_spectateurs: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.spectateurs || 0), 0) / validSessions.length) : 0,
     avg_chapeau: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.chapeau || 0), 0) / validSessions.length) : 0,
+    total_chapeau: validSessions.reduce((s, x) => s + (x.chapeau || 0), 0),
+    total_redistribue: Math.round(totalRedistribue * 100) / 100,
+    total_caisse: Math.round(totalCaisse * 100) / 100,
+    avg_par_artiste: chapeauHistory.length > 0 ? Math.round(chapeauHistory.reduce((s, x) => s + x.parArtiste, 0) / chapeauHistory.length * 100) / 100 : 0,
     avg_parity: validSessions.length > 0 ? Math.round(validSessions.reduce((s, x) => s + (x.parity_pct || 0), 0) / validSessions.length) : 0,
     total_artistes_uniques: artistSet.size,
     trend_spectateurs_pct: 0,
@@ -425,7 +451,7 @@ async function handleStats(env) {
     totals.trend_spectateurs_pct = Math.round((last - prev) / prev * 100);
   }
 
-  return json({ sessions: data.sessions, totals });
+  return json({ sessions: allSessions, totals, chapeau_history: chapeauHistory });
 }
 
 // ===== CHECKLIST =====

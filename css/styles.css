@@ -456,6 +456,23 @@ body {
 
 .paiement-frozen { opacity: 0.6; pointer-events: none; }
 
+.chapeau-detail-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  margin-top: 1rem;
+}
+.chapeau-detail-card .stat-row {
+  font-size: 0.85rem;
+  padding: 4px 0;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+}
+.chapeau-detail-card .stat-row strong {
+  color: var(--accent-green);
+}
+
 /* ===== CARD LIST ===== */
 .view-header {
   display: flex;

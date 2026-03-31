@@ -250,13 +250,20 @@ const App = (() => {
     const closed = isSessionClosed(s);
 
     const phaseEl = document.getElementById('session-phase');
-    phaseEl.textContent = s.phase?.toUpperCase() || '—';
-    phaseEl.className = `session-phase-badge phase-${s.phase || 'init'}`;
+    const phaseLabel = s.annulee ? 'ANNULEE' : s.phase === 'archive' ? 'TERMINEE' : (s.phase?.toUpperCase() || '—');
+    phaseEl.textContent = phaseLabel;
+    phaseEl.className = `session-phase-badge phase-${s.annulee ? 'annule' : s.phase || 'init'}`;
 
     const jourMap = { lundi: 'Lundi', mardi: 'Mardi', mercredi: 'Mercredi', jeudi: 'Jeudi', vendredi: 'Vendredi', samedi: 'Samedi', dimanche: 'Dimanche' };
     const dateStr = s.date ? new Date(s.date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
     document.getElementById('session-date').textContent = `${jourMap[s.jour] || s.jour || ''} ${dateStr}`;
-    document.getElementById('session-countdown').textContent = s.j_minus != null ? `J-${s.j_minus}` : '';
+    // Countdown only for active sessions
+    const countdownEl = document.getElementById('session-countdown');
+    if (closed || s.annulee) {
+      countdownEl.textContent = s.annulee ? '' : `${s.spectateurs_inscrits || 0} spectateurs`;
+    } else {
+      countdownEl.textContent = s.j_minus != null ? (s.j_minus >= 0 ? `J-${s.j_minus}` : `J+${Math.abs(s.j_minus)}`) : '';
+    }
 
     document.getElementById('m-confirmes').textContent = `${s.lineup_count ?? '—'}/${s.lineup_target ?? 10}`;
     document.getElementById('m-inscrits').textContent = s.spectateurs_inscrits ?? '—';
@@ -492,6 +499,16 @@ const App = (() => {
     document.getElementById('s-chapeau-last').textContent = last ? `${last.chapeau || 0}€` : '—';
     document.getElementById('s-chapeau-avg').textContent = s.totals?.avg_chapeau ? `${Math.round(s.totals.avg_chapeau)}€` : '—';
 
+    // Chapeau details
+    const chapeauDetailEl = document.getElementById('s-chapeau-detail');
+    if (chapeauDetailEl && s.totals) {
+      chapeauDetailEl.innerHTML = `
+        <div class="stat-row">Total redistribue : <strong>${s.totals.total_redistribue || 0}€</strong></div>
+        <div class="stat-row">Caisse solidarite : <strong>${s.totals.total_caisse || 0}€</strong></div>
+        <div class="stat-row">Moy. par artiste : <strong>${s.totals.avg_par_artiste || 0}€</strong></div>
+      `;
+    }
+
     // Trend arrows
     const trendEl = document.getElementById('s-trend');
     if (trendEl && last && prev && prev.spectateurs > 0) {
@@ -654,7 +671,11 @@ const App = (() => {
   function renderPaiements() {
     const p = state.paiements;
     if (!p?.artistes?.length) {
-      document.getElementById('paiements-summary').innerHTML = '<p style="color:var(--text-muted)">Aucun paiement</p>';
+      const s = state.session;
+      const msg = s?.annulee ? 'Session annulee — aucun paiement'
+        : s?.phase === 'init' || s?.phase === 'dispos' ? 'Lineup pas encore defini'
+        : 'Aucun paiement enregistre';
+      document.getElementById('paiements-summary').innerHTML = `<p style="color:var(--text-muted)">${msg}</p>`;
       document.getElementById('paiements-list').innerHTML = '';
       document.getElementById('paiements-count').textContent = '0/0';
       return;
