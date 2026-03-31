@@ -129,25 +129,17 @@ async function handleAuth(request, env) {
   return json({ token, role, expires: new Date(exp * 1000).toISOString() });
 }
 
-// ===== LOAD SESSIONS DATA (with KV cache) =====
-const CACHE_KEY = 'sessions_cache';
-const CACHE_TTL = 300; // 5 min
-
-async function loadSessions(env, noCache = false) {
-  // Try KV cache first
-  if (!noCache) {
-    const cached = await env.K2_STATE.get(CACHE_KEY, 'json');
-    if (cached) return cached;
+// ===== LOAD SESSIONS DATA (via ASSETS binding, no CDN cache issue) =====
+async function loadSessions(env) {
+  // Use env.ASSETS to read static files directly (bypasses CDN cache)
+  try {
+    const res = await env.ASSETS.fetch(new URL('/data/sessions.json', 'https://k2-everest.pages.dev'));
+    if (!res.ok) return { sessions: [] };
+    return await res.json();
+  } catch (e) {
+    console.error('loadSessions error:', e);
+    return { sessions: [] };
   }
-
-  // Fallback: read static sessions.json from same origin
-  const res = await fetch(new URL('/data/sessions.json', 'https://k2-everest.pages.dev'));
-  if (!res.ok) return { sessions: [] };
-  const data = await res.json();
-
-  // Cache in KV
-  await env.K2_STATE.put(CACHE_KEY, JSON.stringify(data), { expirationTtl: CACHE_TTL });
-  return data;
 }
 
 function findActiveSession(sessions) {
@@ -179,9 +171,15 @@ async function handleSession(env, url) {
   const femmes = confirmed.filter(a => a.genre === 'F');
   const primos = confirmed.filter(a => a.primo);
 
-  // Read checklist state from KV
-  const checklistStored = await env.K2_STATE.get(`checklist:${session.date}`);
-  const checklistItems = checklistStored ? JSON.parse(checklistStored) : DEFAULT_CHECKLIST;
+  // Read checklist state from KV — for closed sessions, everything is done
+  const isClosed = ['bilan', 'archive', 'annule'].includes(session.phase);
+  let checklistItems;
+  if (isClosed) {
+    checklistItems = DEFAULT_CHECKLIST.map(i => ({ ...i, done: true }));
+  } else {
+    const checklistStored = await env.K2_STATE.get(`checklist:${session.date}`);
+    checklistItems = checklistStored ? JSON.parse(checklistStored) : DEFAULT_CHECKLIST;
+  }
   const checklistDone = checklistItems.filter(i => i.done).length;
 
   // Read MC override from KV (toggle MC feature)
@@ -328,6 +326,12 @@ async function handleStats(env) {
 async function handleChecklistGet(url, env) {
   const data = await loadSessions(env);
   const date = url.searchParams.get('date') || findActiveSession(data.sessions)?.date || '2026-04-08';
+  const session = findSessionByDate(data.sessions, date);
+  const isClosed = session && ['bilan', 'archive', 'annule'].includes(session.phase);
+
+  if (isClosed) {
+    return json({ items: DEFAULT_CHECKLIST.map(i => ({ ...i, done: true })) });
+  }
   const stored = await env.K2_STATE.get(`checklist:${date}`);
   return json({ items: stored ? JSON.parse(stored) : DEFAULT_CHECKLIST });
 }

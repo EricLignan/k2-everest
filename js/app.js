@@ -218,11 +218,16 @@ const App = (() => {
     if (!picker) return;
 
     const moisCourts = ['', 'jan', 'fev', 'mar', 'avr', 'mai', 'jun', 'jul', 'aou', 'sep', 'oct', 'nov', 'dec'];
+    // Determine if we need year context (sessions spanning multiple years or >6 months apart)
+    const years = new Set(sessions.map(s => s.date.split('-')[0]));
+    const showYear = years.size > 1;
     picker.innerHTML = sessions.map(s => {
-      const [, m, d] = s.date.split('-');
-      const label = `${parseInt(d)} ${moisCourts[parseInt(m)]}`;
+      const [y, m, d] = s.date.split('-');
+      const shortYear = showYear ? ` ${y.slice(2)}` : '';
+      const label = `${parseInt(d)} ${moisCourts[parseInt(m)]}${shortYear}`;
       const active = s.date === state.selectedDate;
-      return `<button class="picker-btn ${active ? 'active' : ''}" data-date="${s.date}">${label}</button>`;
+      const phaseIcon = s.annulee ? '✕' : s.phase === 'init' ? '○' : '';
+      return `<button class="picker-btn ${active ? 'active' : ''} ${s.annulee ? 'picker-annule' : ''}" data-date="${s.date}">${phaseIcon ? phaseIcon + ' ' : ''}${label}</button>`;
     }).join('');
 
     picker.querySelectorAll('.picker-btn').forEach(btn => {

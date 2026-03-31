@@ -243,6 +243,10 @@ body {
   color: white;
   border-color: var(--accent);
 }
+.picker-btn.picker-annule {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
 
 /* ===== HEALTH BADGE ===== */
 .health-badge {
