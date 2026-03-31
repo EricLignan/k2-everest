@@ -67,21 +67,31 @@ export async function onRequest(context) {
       return json({ status: 'ok', timestamp: new Date().toISOString() });
     }
 
-    // Temporary debug endpoint — shows what data the Worker actually loads
+    // Temporary debug endpoint
     if (path === '/api/debug') {
       const data = await loadSessions(env);
       const sessions = data.sessions || [];
+      // Also test what paiements endpoint would return for each session
+      const paiementsDebug = {};
+      for (const s of sessions) {
+        const kvData = await env.K2_STATE.get(`paiements:${s.date}`);
+        paiementsDebug[s.date] = {
+          from_kv: kvData ? JSON.parse(kvData) : null,
+          from_json: (s.paiements || []).length,
+          kv_wins: !!kvData,
+        };
+      }
       return json({
         sessions_count: sessions.length,
         sessions: sessions.map(s => ({
-          date: s.date,
-          phase: s.phase,
+          date: s.date, phase: s.phase,
           lineup: s.lineup?.length || 0,
           paiements: s.paiements?.length || 0,
           remplacants: s.remplacants?.length || 0,
           mc: s.mc || null,
           has_ig: (s.lineup || []).filter(a => a.instagram).length,
         })),
+        paiements_debug: paiementsDebug,
         has_assets: !!env.ASSETS,
         timestamp: new Date().toISOString(),
       });
