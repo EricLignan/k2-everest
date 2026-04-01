@@ -719,18 +719,184 @@
       "date": "2026-04-07",
       "jour": "mardi",
       "heure": "19h30",
-      "phase": "dispos",
+      "phase": "programme",
       "artistes_count": 0,
       "spectateurs": 0,
       "chapeau": 0,
       "parity_pct": 0,
       "annulee": false,
-      "mc": null,
+      "mc": "A definir",
       "notes": "",
-      "lineup": [],
-      "remplacants": [],
+      "lineup": [
+        {
+          "name": "Oriane ALLEON",
+          "real_name": "Oriane ALLEON",
+          "hubspot_id": null,
+          "instagram": "Auriane_Dutal",
+          "phone": null,
+          "genre": "F",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Violaine de Pins",
+          "real_name": "Violaine de Pins",
+          "hubspot_id": null,
+          "instagram": "vio2pins",
+          "phone": null,
+          "genre": "F",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Valentin Marsal",
+          "real_name": "Valentin Marsal",
+          "hubspot_id": null,
+          "instagram": "Valentin.marsal",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Elie Souarit",
+          "real_name": "Elie Souarit",
+          "hubspot_id": null,
+          "instagram": "elie_srt",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Guarani Feitosa",
+          "real_name": "Guarani Feitosa",
+          "hubspot_id": null,
+          "instagram": "guarani_feitosa",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Mathieu Hennequin",
+          "real_name": "Mathieu Hennequin",
+          "hubspot_id": null,
+          "instagram": "lerouxtard",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Elias Bouhaddi",
+          "real_name": "Elias Bouhaddi",
+          "hubspot_id": null,
+          "instagram": "elias.hanafi",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": true
+        },
+        {
+          "name": "Robin Clouard",
+          "real_name": "Robin Clouard",
+          "hubspot_id": null,
+          "instagram": "robinclouard",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Stephane Dolbachian",
+          "real_name": "Stephane Dolbachian",
+          "hubspot_id": null,
+          "instagram": "Stef_stand",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Casimir Lissowski",
+          "real_name": "Casimir Lissowski",
+          "hubspot_id": null,
+          "instagram": "casimirzidane",
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "proposed",
+          "is_mc": false,
+          "primo": false
+        }
+      ],
+      "remplacants": [
+        {
+          "name": "Maxime Breuil",
+          "hubspot_id": null,
+          "instagram": null,
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Zacharie Perais",
+          "hubspot_id": null,
+          "instagram": null,
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Fabrice Quenum",
+          "hubspot_id": null,
+          "instagram": null,
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        },
+        {
+          "name": "Thomas Ramond",
+          "hubspot_id": null,
+          "instagram": null,
+          "phone": null,
+          "genre": "H",
+          "order": null,
+          "status": "replacement",
+          "is_mc": false,
+          "primo": false
+        }
+      ],
       "paiements": []
     }
   ],
-  "generated": "2026-03-31T21:57:08.742819"
+  "generated": "2026-04-01T23:19:46.734224"
 }
