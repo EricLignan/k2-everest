@@ -402,70 +402,120 @@
           "montant": 8.46,
           "mode": "lydia",
           "paye": true,
-          "date_paiement": "2026-03-15"
+          "date_paiement": "2026-03-15",
+          "phone": "+33618747373",
+          "email": "quentin.montaclair@gmail.com",
+          "identifiant_lydia": "0618747373",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Émile Rock",
           "montant": 8.46,
           "mode": "lydia",
           "paye": true,
-          "date_paiement": "2026-03-15"
+          "date_paiement": "2026-03-15",
+          "phone": "+33769118984",
+          "email": "rockemile@gmail.com",
+          "identifiant_lydia": "0769118984",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Iris Drigé",
           "montant": 8.46,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-14"
+          "date_paiement": "2026-03-14",
+          "phone": "+33664615543",
+          "email": "iris.drige@hotmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0664615543",
+          "iban": null
         },
         {
           "name": "Thomas Ramond",
           "montant": 8.46,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-27"
+          "date_paiement": "2026-03-27",
+          "phone": "+33642940138",
+          "email": "thomas.ramond3004@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0642940138",
+          "iban": null
         },
         {
           "name": "Robin Clouard",
           "montant": 8.46,
-          "mode": "lydia",
+          "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-15"
+          "date_paiement": "2026-03-15",
+          "phone": "+33610920522",
+          "email": "robin.clouard@gmail.com",
+          "identifiant_lydia": "0610920522",
+          "identifiant_wero": "0610920522",
+          "iban": null
         },
         {
           "name": "Casimir Lissowski",
           "montant": 8.46,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-14"
+          "date_paiement": "2026-03-14",
+          "phone": "+33684952602",
+          "email": "casimirlissowski@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0684952602",
+          "iban": null
         },
         {
           "name": "Gabii Gabriel",
           "montant": 8.46,
           "mode": "virement",
           "paye": true,
-          "date_paiement": "2026-03-24"
+          "date_paiement": "2026-03-24",
+          "phone": "+33619077517",
+          "email": "djanga40@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Jakem",
           "montant": 8.46,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-18"
+          "date_paiement": "2026-03-18",
+          "phone": "+33636807143",
+          "email": "jacquesemmanuelmercier@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0636807143",
+          "iban": null
         },
         {
           "name": "Fafou",
           "montant": 8.46,
           "mode": "lydia",
           "paye": true,
-          "date_paiement": "2026-03-15"
+          "date_paiement": "2026-03-15",
+          "phone": null,
+          "email": "fa.rebei@gmail.com",
+          "identifiant_lydia": "0651576685",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Fabregaz",
           "montant": 8.46,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-14"
+          "date_paiement": "2026-03-14",
+          "phone": "+33687398007",
+          "email": "fabricequenum.pro@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0687398007",
+          "iban": null
         }
       ]
     },
@@ -544,10 +594,10 @@
         },
         {
           "name": "Violaine de Pins",
-          "real_name": "Violaine de Pins",
+          "real_name": null,
           "hubspot_id": "699543630052",
-          "instagram": "vio2pins",
-          "phone": "+33642154722",
+          "instagram": null,
+          "phone": null,
           "genre": "F",
           "order": 7,
           "status": "confirmed",
@@ -568,9 +618,9 @@
         },
         {
           "name": "Thibault Curatolo",
-          "real_name": "Thibault Curatolo",
+          "real_name": null,
           "hubspot_id": "735407848646",
-          "instagram": "tibocrtl",
+          "instagram": null,
           "phone": null,
           "genre": "H",
           "order": 9,
@@ -618,7 +668,7 @@
           "name": "Hélios",
           "real_name": "Léa Nouchi",
           "hubspot_id": "734696983771",
-          "instagram": "helijokes",
+          "instagram": null,
           "phone": null,
           "genre": "F",
           "order": 14,
@@ -634,84 +684,144 @@
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": "+33658527128",
+          "email": "maxime.beaugendre.pro@outlook.fr",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0658527128",
+          "iban": null
         },
         {
           "name": "Stephane Dolbachian",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": "+33760971448",
+          "email": "sdolbakian@hotmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0760971448",
+          "iban": null
         },
         {
           "name": "Eddie CuDi",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": "+33623493590",
+          "email": "eddiecudi.prod@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0623493590",
+          "iban": null
         },
         {
           "name": "Maxime Farrayre",
           "montant": 5.03,
           "mode": "lydia",
           "paye": true,
-          "date_paiement": "2026-03-30"
+          "date_paiement": "2026-03-30",
+          "phone": "+33658859790",
+          "email": "maxime.farrayre@gmail.com",
+          "identifiant_lydia": "0658859790",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Pierre Sabik",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": "+33686843369",
+          "email": "pierre.sabik@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0686843369",
+          "iban": null
         },
         {
           "name": "Violaine de Pins",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": null,
+          "email": null,
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Plante Aquatique",
           "montant": 5.03,
           "mode": "lydia",
           "paye": true,
-          "date_paiement": "2026-03-30"
+          "date_paiement": "2026-03-30",
+          "phone": "+33626074777",
+          "email": "gaellenns@gmail.com",
+          "identifiant_lydia": "0768095294",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Thibault Curatolo",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-31"
+          "date_paiement": "2026-03-31",
+          "phone": null,
+          "email": null,
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "JD",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": "+33642940138",
+          "email": "thomas.ramond3004@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0642940138",
+          "iban": null
         },
         {
           "name": "Jakem",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": "+33636807143",
+          "email": "jacquesemmanuelmercier@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0636807143",
+          "iban": null
         },
         {
           "name": "Casimir Lissowski",
           "montant": 5.03,
           "mode": "wero",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": "+33684952602",
+          "email": "casimirlissowski@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0684952602",
+          "iban": null
         },
         {
           "name": "Hélios",
           "montant": 5.03,
           "mode": "virement",
           "paye": true,
-          "date_paiement": "2026-03-29"
+          "date_paiement": "2026-03-29",
+          "phone": null,
+          "email": "helios.nouchi@orange.fr",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         }
       ]
     },
@@ -742,7 +852,7 @@
         },
         {
           "name": "Maxime Breuil",
-          "real_name": null,
+          "real_name": "Maxime Breuil",
           "hubspot_id": "700033685696",
           "instagram": "maxime.broglie",
           "phone": "+33651697445",
@@ -838,7 +948,7 @@
         },
         {
           "name": "Violaine de Pins",
-          "real_name": "Violaine de Pins",
+          "real_name": null,
           "hubspot_id": "699543630052",
           "instagram": "vio2pins",
           "phone": "+33642154722",
@@ -912,86 +1022,146 @@
         {
           "name": "Guarani Feitosa",
           "montant": 5,
-          "mode": "?",
+          "mode": "wero",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33620720699",
+          "email": "guarani.feitosa@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0620720699",
+          "iban": null
         },
         {
           "name": "Maxime Breuil",
           "montant": 5,
-          "mode": "?",
+          "mode": "rib",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33651697445",
+          "email": "maxime.breuil@live.fr",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": "FR7640618804410004029703554"
         },
         {
           "name": "Doan Salomon",
           "montant": 5,
-          "mode": "?",
+          "mode": "lydia",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33659278971",
+          "email": "doan.vic@hotmail.fr",
+          "identifiant_lydia": "0659278971 (victor sur lydia)",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Elie Souarit",
           "montant": 5,
           "mode": "?",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33665454759",
+          "email": "elie.souarit92@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Oriane ALLÉON",
           "montant": 5,
           "mode": "?",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33687435771",
+          "email": "auriane.dutal@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Emile Rock",
           "montant": 5,
-          "mode": "?",
+          "mode": "lydia",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33769118984",
+          "email": "rockemile@gmail.com",
+          "identifiant_lydia": "0769118984",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Pierre Sabik",
           "montant": 5,
-          "mode": "?",
+          "mode": "wero",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33686843369",
+          "email": "pierre.sabik@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": "0686843369",
+          "iban": null
         },
         {
           "name": "Quentin Montaclair",
           "montant": 5,
-          "mode": "?",
+          "mode": "lydia",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33618747373",
+          "email": "quentin.montaclair@gmail.com",
+          "identifiant_lydia": "0618747373",
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Robin Clouard",
           "montant": 5,
-          "mode": "?",
+          "mode": "wero",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33610920522",
+          "email": "robin.clouard@gmail.com",
+          "identifiant_lydia": "0610920522",
+          "identifiant_wero": "0610920522",
+          "iban": null
         },
         {
           "name": "Violaine de Pins",
           "montant": 5,
           "mode": "?",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33642154722",
+          "email": "vio2pins@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Gabii Gabriel",
           "montant": 5,
           "mode": "?",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33619077517",
+          "email": "djanga40@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         },
         {
           "name": "Benjamin Fosca",
           "montant": 5,
           "mode": "?",
           "paye": false,
-          "date_paiement": null
+          "date_paiement": null,
+          "phone": "+33676087411",
+          "email": "benjamin.fosca@gmail.com",
+          "identifiant_lydia": null,
+          "identifiant_wero": null,
+          "iban": null
         }
       ]
     },
@@ -1012,5 +1182,5 @@
       "paiements": []
     }
   ],
-  "generated": "2026-04-12T17:18:40.967083"
+  "generated": "2026-04-12T18:51:17.779382"
 }
