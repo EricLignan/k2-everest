@@ -125,6 +125,7 @@ export async function onRequest(context) {
       return request.method === 'POST' ? handlePaiementsPost(request, env, payload) : handlePaiementsGet(url, env);
     }
     if (path === '/api/mc') return handleMcToggle(request, env, payload);
+    if (path === '/api/admin/reality-dump') return handleRealityDump(env, payload);
 
     return json({ error: 'Route inconnue' }, 404);
   } catch (err) {
@@ -574,4 +575,41 @@ async function handleMcToggle(request, env, payload) {
 
   await env.K2_STATE.put(`mc:${date}`, artiste);
   return json({ ok: true, mc: artiste });
+}
+
+// ===== ADMIN: REALITY DUMP =====
+// Dumps all KV state under session-related prefixes for offline reconciliation.
+// Protected by admin JWT only.
+async function handleRealityDump(env, payload) {
+  if (payload.role !== 'admin') return json({ error: 'Admin requis' }, 403);
+
+  const prefixes = ['pointage:', 'paiements:', 'chapeau:', 'checklist:', 'mc:'];
+  const dump = {};
+
+  for (const prefix of prefixes) {
+    const bucket = {};
+    let cursor = undefined;
+    // KV.list() is paginated; loop until done
+    do {
+      const listRes = await env.K2_STATE.list({ prefix, cursor });
+      for (const k of listRes.keys) {
+        const raw = await env.K2_STATE.get(k.name);
+        if (raw == null) continue;
+        // Try JSON parse, fallback to raw string
+        try {
+          bucket[k.name] = JSON.parse(raw);
+        } catch {
+          bucket[k.name] = raw;
+        }
+      }
+      cursor = listRes.list_complete ? undefined : listRes.cursor;
+    } while (cursor);
+    dump[prefix.replace(':', '')] = bucket;
+  }
+
+  return json({
+    generated_at: new Date().toISOString(),
+    keys_count: Object.values(dump).reduce((s, b) => s + Object.keys(b).length, 0),
+    dump,
+  });
 }
