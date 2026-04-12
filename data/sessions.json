@@ -434,10 +434,10 @@
         },
         {
           "name": "Violaine de Pins",
-          "real_name": null,
+          "real_name": "Violaine de Pins",
           "hubspot_id": "699543630052",
-          "instagram": null,
-          "phone": null,
+          "instagram": "vio2pins",
+          "phone": "+33642154722",
           "genre": "F",
           "order": 7,
           "status": "confirmed",
@@ -458,9 +458,9 @@
         },
         {
           "name": "Thibault Curatolo",
-          "real_name": null,
+          "real_name": "Thibault Curatolo",
           "hubspot_id": "735407848646",
-          "instagram": null,
+          "instagram": "tibocrtl",
           "phone": null,
           "genre": "H",
           "order": 9,
@@ -508,7 +508,7 @@
           "name": "Hélios",
           "real_name": "Léa Nouchi",
           "hubspot_id": "734696983771",
-          "instagram": null,
+          "instagram": "helijokes",
           "phone": null,
           "genre": "F",
           "order": 14,
@@ -585,11 +585,11 @@
           "mode": "wero",
           "paye": true,
           "date_paiement": "2026-03-29",
-          "phone": null,
-          "email": null,
-          "identifiant_lydia": null,
-          "identifiant_wero": null,
-          "iban": null
+          "phone": "+33642154722",
+          "email": "vio2pins@gmail.com",
+          "identifiant_lydia": "0642154722",
+          "identifiant_wero": "0642154722",
+          "iban": "FR76 3000 4003 4900 0006 3162 286"
         },
         {
           "name": "Plante Aquatique",
@@ -610,9 +610,9 @@
           "paye": true,
           "date_paiement": "2026-03-31",
           "phone": null,
-          "email": null,
-          "identifiant_lydia": null,
-          "identifiant_wero": null,
+          "email": "thibault.curatolo@lamache.org",
+          "identifiant_lydia": "0621135109",
+          "identifiant_wero": "0621135109",
           "iban": null
         },
         {
@@ -654,14 +654,14 @@
         {
           "name": "Hélios",
           "montant": 5.03,
-          "mode": "virement",
+          "mode": "rib",
           "paye": true,
           "date_paiement": "2026-03-29",
           "phone": null,
           "email": "helios.nouchi@orange.fr",
           "identifiant_lydia": null,
           "identifiant_wero": null,
-          "iban": null
+          "iban": "FR76 3000 3033 5200 0505 8173 652"
         }
       ]
     },
@@ -727,8 +727,8 @@
           "primo": true
         },
         {
-          "name": "Oriane ALLÉON",
-          "real_name": null,
+          "name": "Auriane DUTAL",
+          "real_name": "Oriane ALLÉON",
           "hubspot_id": "738081727734",
           "instagram": "Auriane_Dutal",
           "phone": "+33687435771",
@@ -788,7 +788,7 @@
         },
         {
           "name": "Violaine de Pins",
-          "real_name": null,
+          "real_name": "Violaine de Pins",
           "hubspot_id": "699543630052",
           "instagram": "vio2pins",
           "phone": "+33642154722",
@@ -910,13 +910,13 @@
         {
           "name": "Oriane ALLÉON",
           "montant": 5,
-          "mode": "?",
+          "mode": "wero",
           "paye": false,
           "date_paiement": null,
           "phone": "+33687435771",
           "email": "auriane.dutal@gmail.com",
           "identifiant_lydia": null,
-          "identifiant_wero": null,
+          "identifiant_wero": "0687435771",
           "iban": null
         },
         {
@@ -970,14 +970,14 @@
         {
           "name": "Violaine de Pins",
           "montant": 5,
-          "mode": "?",
+          "mode": "wero",
           "paye": false,
           "date_paiement": null,
           "phone": "+33642154722",
           "email": "vio2pins@gmail.com",
-          "identifiant_lydia": null,
-          "identifiant_wero": null,
-          "iban": null
+          "identifiant_lydia": "0642154722",
+          "identifiant_wero": "0642154722",
+          "iban": "FR76 3000 4003 4900 0006 3162 286"
         },
         {
           "name": "Gabii Gabriel",
@@ -1022,5 +1022,5 @@
       "paiements": []
     }
   ],
-  "generated": "2026-04-12T21:02:38.362560"
+  "generated": "2026-04-12T21:38:34.384791"
 }
