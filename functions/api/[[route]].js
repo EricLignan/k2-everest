@@ -516,6 +516,54 @@ async function handleChapeau(request, env, payload) {
 }
 
 // ===== PAIEMENTS =====
+//
+// Data model (v2, session 166) :
+//   KV paiements:{date} = { version: 2, state: { "<artist_name>": { paye, date_paiement } } }
+//     - Overlay MINIMAL : seulement les champs mutables par l'app live
+//     - Jamais d'enrichissement (mode, phone, email, identifiants) — ces champs
+//       sont la source de sessions.json (derive du YAML via sync_k2.py)
+//   KV failures:{date}  = [ { artiste, channel, reason, timestamp } ... ]
+//
+// Legacy (v1) : la KV contenait une copie complete de la liste paiements, ce qui
+// ecrasait silencieusement les fix d'enrichissement de sync_k2.py. Auto-migration
+// a la lecture (detect shape, extract state, rewrite).
+
+async function _loadPaiementsOverlay(env, date) {
+  const stored = await env.K2_STATE.get(`paiements:${date}`);
+  if (!stored) return {};
+  try {
+    const parsed = JSON.parse(stored);
+    // Legacy v1 shape : { artistes: [ { name, paye, date_paiement, mode, ... }, ... ] }
+    if (Array.isArray(parsed.artistes)) {
+      const migrated = {};
+      for (const a of parsed.artistes) {
+        if (a && a.name) {
+          migrated[a.name] = {
+            paye: !!a.paye,
+            date_paiement: a.date_paiement || null,
+          };
+        }
+      }
+      // Rewrite in new shape
+      const newPayload = { version: 2, state: migrated };
+      await env.K2_STATE.put(`paiements:${date}`, JSON.stringify(newPayload));
+      return migrated;
+    }
+    // New v2 shape
+    if (parsed.version === 2 && parsed.state) {
+      return parsed.state;
+    }
+    return {};
+  } catch (e) {
+    return {};
+  }
+}
+
+async function _savePaiementsOverlay(env, date, state) {
+  const payload = { version: 2, state };
+  await env.K2_STATE.put(`paiements:${date}`, JSON.stringify(payload));
+}
+
 async function handlePaiementsGet(url, env) {
   const data = await loadSessions(env);
   const date = url.searchParams.get('date');
@@ -523,8 +571,10 @@ async function handlePaiementsGet(url, env) {
     ? findSessionByDate(data.sessions, date) || findActiveSession(data.sessions)
     : findActiveSession(data.sessions);
 
-  // Load failure signals for this session (used to decorate each paiement)
-  const failuresStored = session ? await env.K2_STATE.get(`failures:${session.date}`) : null;
+  if (!session) return json({ artistes: [] });
+
+  // Load failure signals for this session
+  const failuresStored = await env.K2_STATE.get(`failures:${session.date}`);
   const allFailures = failuresStored ? JSON.parse(failuresStored) : [];
   const failuresByArtist = {};
   for (const f of allFailures) {
@@ -532,58 +582,36 @@ async function handlePaiementsGet(url, env) {
     failuresByArtist[f.artiste].push(f);
   }
 
-  // Try KV first (user-modified paiements) — but only if it has real data
-  const stored = await env.K2_STATE.get(`paiements:${session?.date}`);
-  let responseData;
-  if (stored) {
-    const kvData = JSON.parse(stored);
-    // Only use KV if it has actual artistes data (not empty from a bug)
-    if (kvData.artistes?.length > 0) {
-      responseData = kvData;
-    } else {
-      // KV has empty data — delete it so sessions.json takes over
-      await env.K2_STATE.delete(`paiements:${session?.date}`);
-    }
-  }
-  if (!responseData) {
-    // From sessions.json (source of truth)
-    responseData = { artistes: session?.paiements || [] };
-  }
+  // Base : enrichment from sessions.json (source of truth)
+  const basePaiements = session.paiements || [];
+  // Overlay : mutation state from KV
+  const overlay = await _loadPaiementsOverlay(env, session.date);
 
-  // Decorate with failures
-  for (const a of responseData.artistes || []) {
-    if (failuresByArtist[a.name]) {
-      a.failures = failuresByArtist[a.name];
-    }
-  }
-  return json(responseData);
+  const merged = basePaiements.map(p => {
+    const o = overlay[p.name] || {};
+    return {
+      ...p,                                   // enrichment from sessions.json
+      paye: o.paye != null ? o.paye : (p.paye || false),
+      date_paiement: o.date_paiement !== undefined ? o.date_paiement : (p.date_paiement || null),
+      failures: failuresByArtist[p.name] || undefined,
+    };
+  });
+
+  return json({ artistes: merged });
 }
 
 async function handlePaiementsPost(request, env, payload) {
   if (payload.role !== 'admin') return json({ error: 'Admin requis' }, 403);
 
-  const { date, artiste, paye, mode } = await request.json();
+  const { date, artiste, paye } = await request.json();
   if (!date || !artiste) return json({ error: 'date et artiste requis' }, 400);
 
-  const key = `paiements:${date}`;
-  const stored = await env.K2_STATE.get(key);
-  let data;
-  if (stored) {
-    data = JSON.parse(stored);
-  } else {
-    // Initialize from sessions.json
-    const sessionsData = await loadSessions(env);
-    const session = findSessionByDate(sessionsData.sessions, date) || {};
-    data = { artistes: session.paiements || [] };
-  }
-
-  const art = data.artistes.find(a => a.name === artiste);
-  if (art) {
-    art.paye = !!paye;
-    art.date_paiement = paye ? new Date().toISOString().slice(0, 10) : null;
-    if (mode) art.mode = mode;
-  }
-  await env.K2_STATE.put(key, JSON.stringify(data));
+  const overlay = await _loadPaiementsOverlay(env, date);
+  overlay[artiste] = {
+    paye: !!paye,
+    date_paiement: paye ? new Date().toISOString().slice(0, 10) : null,
+  };
+  await _savePaiementsOverlay(env, date, overlay);
   return json({ ok: true });
 }
 
