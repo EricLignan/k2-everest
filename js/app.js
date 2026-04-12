@@ -487,43 +487,76 @@ const App = (() => {
     const s = state.stats;
     if (!s) return;
 
-    Charts.barChart(document.getElementById('stats-chart'), s.sessions, {
-      valueKey: 'spectateurs',
-      barColor: '#e94560',
-    });
-
     const validSessions = s.sessions?.filter(x => !x.annulee && x.phase !== 'init') || [];
     const last = validSessions.length > 0 ? validSessions[validSessions.length - 1] : null;
     const prev = validSessions.length > 1 ? validSessions[validSessions.length - 2] : null;
 
-    document.getElementById('s-chapeau-last').textContent = last ? `${last.chapeau || 0}€` : '—';
-    document.getElementById('s-chapeau-avg').textContent = s.totals?.avg_chapeau ? `${Math.round(s.totals.avg_chapeau)}€` : '—';
-
-    // Chapeau details
-    const chapeauDetailEl = document.getElementById('s-chapeau-detail');
-    if (chapeauDetailEl && s.totals) {
-      chapeauDetailEl.innerHTML = `
-        <div class="stat-row">Total redistribue : <strong>${s.totals.total_redistribue || 0}€</strong></div>
-        <div class="stat-row">Caisse solidarite : <strong>${s.totals.total_caisse || 0}€</strong></div>
-        <div class="stat-row">Moy. par artiste : <strong>${s.totals.avg_par_artiste || 0}€</strong></div>
-      `;
-    }
+    // Frequentation bar chart
+    Charts.barChart(document.getElementById('stats-chart'), validSessions, {
+      valueKey: 'spectateurs',
+      barColor: '#e94560',
+    });
 
     // Trend arrows
     const trendEl = document.getElementById('s-trend');
     if (trendEl && last && prev && prev.spectateurs > 0) {
       const pct = Math.round((last.spectateurs - prev.spectateurs) / prev.spectateurs * 100);
-      const arrow = pct >= 0 ? '↑' : '↓';
+      const arrow = pct >= 0 ? '\u2191' : '\u2193';
       const color = pct >= 0 ? 'var(--accent-green)' : 'var(--accent)';
       trendEl.innerHTML = `<span style="color:${color};font-weight:700">${arrow} ${Math.abs(pct)}%</span> frequentation vs precedente`;
       trendEl.classList.remove('hidden');
     } else if (trendEl) {
       trendEl.classList.add('hidden');
     }
+
+    // Chapeau bar chart
+    const chapeauChartEl = document.getElementById('stats-chapeau-chart');
+    if (chapeauChartEl) {
+      Charts.barChart(chapeauChartEl, validSessions, {
+        valueKey: 'chapeau',
+        barColor: '#ffc107',
+        unit: '\u20AC',
+      });
+    }
+
+    document.getElementById('s-chapeau-last').textContent = last ? `${last.chapeau || 0}\u20AC` : '\u2014';
+    document.getElementById('s-chapeau-avg').textContent = s.totals?.avg_chapeau ? `${Math.round(s.totals.avg_chapeau)}\u20AC` : '\u2014';
+
+    // Chapeau details
+    const chapeauDetailEl = document.getElementById('s-chapeau-detail');
+    if (chapeauDetailEl && s.totals) {
+      chapeauDetailEl.innerHTML = `
+        <div class="stat-row">Total redistribue : <strong>${s.totals.total_redistribue || 0}\u20AC</strong></div>
+        <div class="stat-row">Caisse solidarite : <strong>${s.totals.total_caisse || 0}\u20AC</strong></div>
+        <div class="stat-row">Moy. par artiste : <strong>${s.totals.avg_par_artiste || 0}\u20AC</strong></div>
+        <div class="stat-row">Total chapeau : <strong>${s.totals.total_chapeau || 0}\u20AC</strong></div>
+      `;
+    }
+
+    // Parity
     document.getElementById('s-parity-pct').textContent = `${s.totals?.avg_parity || 0}%`;
     document.getElementById('s-parity-fill').style.width = `${s.totals?.avg_parity || 0}%`;
-    document.getElementById('s-pool').textContent = s.totals?.total_artistes_uniques ?? '—';
-    document.getElementById('s-sessions').textContent = s.totals?.sessions_count ?? '—';
+
+    // Leaderboard — count performances per artist across all sessions
+    const leaderboardEl = document.getElementById('stats-leaderboard');
+    if (leaderboardEl) {
+      const artistMap = {};
+      (s.sessions || []).forEach(sess => {
+        if (sess.annulee) return;
+        (sess.lineup || []).forEach(a => {
+          if (a.status === 'confirmed' || a.status === 'performed') {
+            const key = a.name || a.real_name;
+            if (!key) return;
+            if (!artistMap[key]) artistMap[key] = { name: key, genre: a.genre, count: 0 };
+            artistMap[key].count++;
+          }
+        });
+      });
+      Charts.leaderboard(leaderboardEl, Object.values(artistMap));
+    }
+
+    document.getElementById('s-pool').textContent = s.totals?.total_artistes_uniques ?? '\u2014';
+    document.getElementById('s-sessions').textContent = s.totals?.sessions_count ?? '\u2014';
   }
 
   // ===== RENDER: CHECKLIST =====
@@ -683,33 +716,143 @@ const App = (() => {
 
     const payes = p.artistes.filter(a => a.paye).length;
     const total = p.artistes.length;
+    const montantUnit = p.artistes[0]?.montant || 0;
+    const totalEur = montantUnit * total;
+    const payeEur = montantUnit * payes;
+    const pct = total > 0 ? Math.round(payes / total * 100) : 0;
+
     document.getElementById('paiements-count').textContent = `${payes}/${total}`;
     document.getElementById('paiements-summary').innerHTML = `
-      <div class="metric-value">${p.artistes[0]?.montant || '—'}€</div>
-      <div class="metric-label">par artiste</div>
+      <div class="metric-value">${payeEur}€ / ${totalEur}€</div>
+      <div class="metric-label">${montantUnit}€ par artiste</div>
+      <div class="paiements-progress">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--accent-green)"></div></div>
+        <span class="paiements-progress-label">${pct}%</span>
+      </div>
     `;
 
     const closed = isSessionClosed(state.session);
     const allPaid = p.artistes.every(a => a.paye);
+    const isAdmin = API.getRole() === 'admin';
+
+    // Sort: unpaid first, then paid
+    const sorted = [...p.artistes].sort((a, b) => (a.paye === b.paye ? 0 : a.paye ? 1 : -1));
 
     const list = document.getElementById('paiements-list');
-    list.innerHTML = p.artistes.map(a => `
-      <div class="paiement-card ${closed && allPaid ? 'paiement-frozen' : ''}" data-artist="${a.name}">
-        <div class="paiement-info">
-          <div class="paiement-name">${a.name}</div>
-          <div class="paiement-mode">${a.mode || '?'} ${a.date_paiement ? '— ' + a.date_paiement : ''}</div>
-        </div>
-        <span class="paiement-amount">${a.montant || '—'}€</span>
-        <span class="status-pill ${a.paye ? 'status-confirmed' : 'status-proposed'}">${a.paye ? 'Paye' : 'En attente'}</span>
-      </div>
-    `).join('');
+    list.innerHTML = sorted.map(a => paiementCard(a, closed, allPaid, isAdmin)).join('');
 
-    // Click to toggle paid (admin only, not for fully-paid closed sessions)
-    if (API.getRole() === 'admin' && !(closed && allPaid)) {
-      list.querySelectorAll('.paiement-card').forEach(card => {
-        card.addEventListener('click', () => togglePaiement(card.dataset.artist));
+    // Toggle paid buttons
+    if (isAdmin && !(closed && allPaid)) {
+      list.querySelectorAll('.paiement-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          togglePaiement(btn.dataset.artist);
+        });
       });
     }
+
+    // Copy buttons
+    list.querySelectorAll('.btn-copy-id').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        copyToClipboard(btn.dataset.copy);
+      });
+    });
+  }
+
+  function paiementCard(a, closed, allPaid, isAdmin) {
+    const frozen = closed && allPaid;
+    const modeInfo = getPaiementModeInfo(a);
+
+    let actionsHtml = '';
+    if (!frozen) {
+      // Action button (deep link or copy)
+      if (modeInfo.actionUrl) {
+        actionsHtml += `<a href="${modeInfo.actionUrl}" target="_blank" rel="noopener" class="paiement-btn ${modeInfo.btnClass}" onclick="event.stopPropagation()">${modeInfo.actionLabel}</a>`;
+      }
+      if (modeInfo.copyValue) {
+        actionsHtml += `<button class="paiement-btn btn-copy-id" data-copy="${escapeAttr(modeInfo.copyValue)}">${modeInfo.copyLabel}</button>`;
+      }
+      // Toggle button
+      if (isAdmin) {
+        actionsHtml += `<button class="paiement-toggle ${a.paye ? 'paiement-toggle-paid' : 'paiement-toggle-pending'}" data-artist="${escapeAttr(a.name)}">${a.paye ? 'Paye' : 'A payer'}</button>`;
+      }
+    }
+
+    return `
+      <div class="paiement-card ${a.paye ? 'paiement-paid' : ''} ${frozen ? 'paiement-frozen' : ''}" data-artist="${escapeAttr(a.name)}">
+        <div class="paiement-row-top">
+          <span class="paiement-name">${a.name}</span>
+          <span class="paiement-amount">${a.montant || '—'}€</span>
+        </div>
+        <div class="paiement-row-mode">
+          <span class="paiement-mode-icon">${modeInfo.icon}</span>
+          <span class="paiement-mode-label">${modeInfo.label}</span>
+          <span class="paiement-identifier">${modeInfo.identifier}</span>
+        </div>
+        <div class="paiement-row-actions">
+          ${actionsHtml}
+          ${a.date_paiement ? `<span style="font-size:0.75rem;color:var(--text-muted)">${a.date_paiement}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  function getPaiementModeInfo(a) {
+    const mode = (a.mode || '').toLowerCase();
+    const phone = a.phone || a.identifiant_wero || '';
+    const lydia = a.identifiant_lydia || '';
+    const iban = a.iban || '';
+
+    if (mode === 'wero' || (mode === '?' && a.identifiant_wero)) {
+      const num = a.identifiant_wero || phone;
+      const formatted = formatPhone(num);
+      return {
+        icon: '\uD83D\uDD35', label: 'Wero', identifier: formatted,
+        actionUrl: null, actionLabel: '',
+        copyValue: num, copyLabel: 'Copier tel',
+        btnClass: 'paiement-btn-wero',
+      };
+    }
+    if (mode === 'lydia' || (mode === '?' && lydia)) {
+      const formatted = formatPhone(lydia);
+      return {
+        icon: '\uD83D\uDFE3', label: 'Lydia', identifier: formatted,
+        actionUrl: null, actionLabel: '',
+        copyValue: lydia, copyLabel: 'Copier Lydia',
+        btnClass: 'paiement-btn-lydia',
+      };
+    }
+    if (mode === 'rib' || mode === 'virement' || (mode === '?' && iban)) {
+      const masked = iban ? iban.slice(0, 4) + ' **** ' + iban.slice(-4) : '—';
+      return {
+        icon: '\uD83C\uDFE6', label: 'Virement', identifier: masked,
+        actionUrl: null, actionLabel: '',
+        copyValue: iban, copyLabel: 'Copier IBAN',
+        btnClass: '',
+      };
+    }
+    // Unknown mode — show contact
+    return {
+      icon: '\u26A0\uFE0F', label: 'Non renseigne', identifier: formatPhone(phone) || '',
+      actionUrl: phone ? `tel:${phone}` : null, actionLabel: 'Appeler',
+      copyValue: phone || null, copyLabel: phone ? 'Copier tel' : '',
+      btnClass: 'paiement-btn-contact',
+    };
+  }
+
+  function formatPhone(num) {
+    if (!num) return '';
+    const clean = num.replace(/[^0-9+]/g, '');
+    // Format French numbers: +33612345678 → 06 12 34 56 78
+    if (clean.startsWith('+33') && clean.length === 12) {
+      const local = '0' + clean.slice(3);
+      return local.replace(/(\d{2})(?=\d)/g, '$1 ');
+    }
+    if (clean.startsWith('0') && clean.length === 10) {
+      return clean.replace(/(\d{2})(?=\d)/g, '$1 ');
+    }
+    return clean;
   }
 
   async function togglePaiement(artistName) {

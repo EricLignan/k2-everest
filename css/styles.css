@@ -821,21 +821,105 @@ body {
   text-align: center;
 }
 
+.paiements-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 0.75rem;
+}
+.paiements-progress .progress-bar { flex: 1; }
+.paiements-progress-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .paiement-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.paiement-card.paiement-paid {
+  opacity: 0.55;
+  border-color: var(--accent-green);
+}
+
+.paiement-row-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 56px;
+}
+.paiement-name { font-weight: 600; font-size: 0.95rem; }
+.paiement-amount { font-weight: 700; font-size: 1rem; }
+
+.paiement-row-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.paiement-mode-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.paiement-mode-label { font-weight: 600; }
+.paiement-identifier {
+  font-family: monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.3px;
+}
+
+.paiement-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.paiement-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.paiement-btn:active { background: var(--border); }
+.paiement-btn-wero { border-color: #0072CE; color: #0072CE; }
+.paiement-btn-lydia { border-color: #6C5CE7; color: #6C5CE7; }
+.paiement-btn-contact { border-color: var(--accent-orange); color: var(--accent-orange); }
+
+.paiement-toggle {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.paiement-toggle-pending {
+  background: var(--accent);
+  color: #fff;
+}
+.paiement-toggle-paid {
+  background: var(--accent-green);
+  color: #fff;
 }
 
 .paiement-info { flex: 1; }
-.paiement-name { font-weight: 600; font-size: 0.9rem; }
 .paiement-mode { font-size: 0.75rem; color: var(--text-muted); }
-.paiement-amount { font-weight: 700; font-size: 1rem; margin-right: 8px; }
 
 /* ===== STATS CHART ===== */
 .stats-chart {
@@ -846,6 +930,36 @@ body {
   margin-bottom: 1rem;
   min-height: 160px;
 }
+
+.stats-section-title {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 1.25rem 0 0.5rem;
+}
+.stats-section-title:first-child { margin-top: 0; }
+
+/* ===== LEADERBOARD ===== */
+.leaderboard-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 1rem;
+}
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+.leaderboard-row + .leaderboard-row { border-top: 1px solid var(--border); }
+.lb-rank { width: 28px; text-align: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+.lb-name { flex: 1; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lb-bar-bg { flex: 0 0 60px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.lb-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+.lb-count { width: 24px; text-align: right; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
 
 /* ===== TOAST ===== */
 .toast {

@@ -122,7 +122,13 @@
       <!-- STATS -->
       <section id="view-stats" class="view">
         <div class="view-header"><h2>Stats</h2></div>
+
+        <h3 class="stats-section-title">Frequentation</h3>
         <div id="stats-chart" class="stats-chart"></div>
+        <div id="s-trend" class="trend-line hidden"></div>
+
+        <h3 class="stats-section-title">Chapeau</h3>
+        <div id="stats-chapeau-chart" class="stats-chart"></div>
         <div class="metrics-grid">
           <div class="metric-card">
             <span class="metric-value" id="s-chapeau-last">—</span>
@@ -133,9 +139,12 @@
             <span class="metric-label">moy/session</span>
           </div>
         </div>
+        <div id="s-chapeau-detail" class="chapeau-detail-card"></div>
+
+        <h3 class="stats-section-title">Parite</h3>
         <div class="parity-bar">
           <div class="parity-header">
-            <span>Parite</span>
+            <span>Moyenne</span>
             <span id="s-parity-pct">0%</span>
           </div>
           <div class="progress-bar">
@@ -144,8 +153,10 @@
           </div>
           <span class="parity-target-label">Objectif 40%</span>
         </div>
-        <div id="s-trend" class="trend-line hidden"></div>
-        <div id="s-chapeau-detail" class="chapeau-detail-card"></div>
+
+        <h3 class="stats-section-title">Artistes les plus programmes</h3>
+        <div id="stats-leaderboard" class="leaderboard-container"></div>
+
         <div class="metrics-grid" style="margin-top:1rem">
           <div class="metric-card">
             <span class="metric-value" id="s-pool">—</span>
