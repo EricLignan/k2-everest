@@ -691,7 +691,7 @@
       "date": "2026-04-07",
       "jour": "mardi",
       "heure": "19h30",
-      "phase": "bilan",
+      "phase": "archive",
       "artistes_count": 12,
       "spectateurs": 9,
       "chapeau": 57.5,
@@ -1056,5 +1056,5 @@
       "paiements": []
     }
   ],
-  "generated": "2026-04-12T23:53:33.765342"
+  "generated": "2026-04-12T23:58:41.531001"
 }
