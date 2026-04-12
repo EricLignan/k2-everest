@@ -125,6 +125,7 @@ export async function onRequest(context) {
       return request.method === 'POST' ? handlePaiementsPost(request, env, payload) : handlePaiementsGet(url, env);
     }
     if (path === '/api/mc') return handleMcToggle(request, env, payload);
+    if (path === '/api/paiement-failure') return handlePaiementFailure(request, env, payload);
     if (path === '/api/admin/reality-dump') return handleRealityDump(env, payload);
 
     return json({ error: 'Route inconnue' }, 404);
@@ -522,20 +523,40 @@ async function handlePaiementsGet(url, env) {
     ? findSessionByDate(data.sessions, date) || findActiveSession(data.sessions)
     : findActiveSession(data.sessions);
 
+  // Load failure signals for this session (used to decorate each paiement)
+  const failuresStored = session ? await env.K2_STATE.get(`failures:${session.date}`) : null;
+  const allFailures = failuresStored ? JSON.parse(failuresStored) : [];
+  const failuresByArtist = {};
+  for (const f of allFailures) {
+    if (!failuresByArtist[f.artiste]) failuresByArtist[f.artiste] = [];
+    failuresByArtist[f.artiste].push(f);
+  }
+
   // Try KV first (user-modified paiements) — but only if it has real data
   const stored = await env.K2_STATE.get(`paiements:${session?.date}`);
+  let responseData;
   if (stored) {
     const kvData = JSON.parse(stored);
     // Only use KV if it has actual artistes data (not empty from a bug)
     if (kvData.artistes?.length > 0) {
-      return json(kvData);
+      responseData = kvData;
+    } else {
+      // KV has empty data — delete it so sessions.json takes over
+      await env.K2_STATE.delete(`paiements:${session?.date}`);
     }
-    // KV has empty data — delete it so sessions.json takes over
-    await env.K2_STATE.delete(`paiements:${session?.date}`);
+  }
+  if (!responseData) {
+    // From sessions.json (source of truth)
+    responseData = { artistes: session?.paiements || [] };
   }
 
-  // From sessions.json (source of truth)
-  return json({ artistes: session?.paiements || [] });
+  // Decorate with failures
+  for (const a of responseData.artistes || []) {
+    if (failuresByArtist[a.name]) {
+      a.failures = failuresByArtist[a.name];
+    }
+  }
+  return json(responseData);
 }
 
 async function handlePaiementsPost(request, env, payload) {
@@ -577,13 +598,37 @@ async function handleMcToggle(request, env, payload) {
   return json({ ok: true, mc: artiste });
 }
 
+// ===== PAIEMENT FAILURE FEEDBACK =====
+// Stores an ephemeral signal that a payment attempt failed via a specific channel.
+// Read back into the paiements response so the card can show a badge.
+async function handlePaiementFailure(request, env, payload) {
+  if (request.method !== 'POST') return json({ error: 'POST requis' }, 405);
+  if (payload.role !== 'admin' && payload.role !== 'team') return json({ error: 'Admin ou team requis' }, 403);
+
+  const { date, artiste, hubspot_id, channel, reason } = await request.json();
+  if (!date || !artiste || !channel) return json({ error: 'date, artiste et channel requis' }, 400);
+
+  const key = `failures:${date}`;
+  const stored = await env.K2_STATE.get(key);
+  const failures = stored ? JSON.parse(stored) : [];
+  failures.push({
+    artiste,
+    hubspot_id: hubspot_id || null,
+    channel: String(channel).trim().toLowerCase(),
+    reason: reason ? String(reason).trim() : '',
+    timestamp: new Date().toISOString(),
+  });
+  await env.K2_STATE.put(key, JSON.stringify(failures));
+  return json({ ok: true, total: failures.length });
+}
+
 // ===== ADMIN: REALITY DUMP =====
 // Dumps all KV state under session-related prefixes for offline reconciliation.
 // Protected by admin JWT only.
 async function handleRealityDump(env, payload) {
   if (payload.role !== 'admin') return json({ error: 'Admin requis' }, 403);
 
-  const prefixes = ['pointage:', 'paiements:', 'chapeau:', 'checklist:', 'mc:'];
+  const prefixes = ['pointage:', 'paiements:', 'chapeau:', 'checklist:', 'mc:', 'failures:'];
   const dump = {};
 
   for (const prefix of prefixes) {

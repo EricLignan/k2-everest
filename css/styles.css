@@ -874,6 +874,80 @@ body {
   letter-spacing: 0.3px;
 }
 
+/* Alternatives (multi-canal paiement) */
+.paiement-alternatives {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0 4px 24px;
+  border-left: 2px solid var(--border);
+  margin-left: 8px;
+}
+.paiement-alt-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+}
+.paiement-alt-display {
+  flex: 1;
+  font-family: monospace;
+  letter-spacing: 0.2px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.paiement-alt-empty {
+  font-style: italic;
+  color: var(--accent-orange);
+  font-family: inherit;
+}
+.paiement-alt-btn {
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.paiement-alt-btn:active { background: var(--border); }
+.paiement-alt-link {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+/* Failure badge + button */
+.paiement-failure-badge {
+  padding: 4px 8px;
+  background: rgba(253, 126, 20, 0.15);
+  color: var(--accent-orange);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.paiement-failure-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-orange);
+  background: var(--bg-input);
+  color: var(--accent-orange);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.paiement-failure-btn:active { background: var(--accent-orange); color: #fff; }
+.paiement-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
 .paiement-row-actions {
   display: flex;
   align-items: center;

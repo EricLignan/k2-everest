@@ -717,8 +717,8 @@ const App = (() => {
     const payes = p.artistes.filter(a => a.paye).length;
     const total = p.artistes.length;
     const montantUnit = p.artistes[0]?.montant || 0;
-    const totalEur = montantUnit * total;
-    const payeEur = montantUnit * payes;
+    const totalEur = Math.round(montantUnit * total * 100) / 100;
+    const payeEur = Math.round(montantUnit * payes * 100) / 100;
     const pct = total > 0 ? Math.round(payes / total * 100) : 0;
 
     document.getElementById('paiements-count').textContent = `${payes}/${total}`;
@@ -758,25 +758,71 @@ const App = (() => {
         copyToClipboard(btn.dataset.copy);
       });
     });
+
+    // Failure buttons (signaler un paiement echoue)
+    list.querySelectorAll('.paiement-failure-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        signalFailure(btn.dataset.artist, btn.dataset.hid);
+      });
+    });
+  }
+
+  async function signalFailure(artistName, hubspotId) {
+    const date = state.session?.date;
+    if (!date) return;
+    const channel = prompt(
+      `Quel canal a echoue pour ${artistName} ?\n\nwero / lydia / virement / tel / email / autre`,
+      'wero'
+    );
+    if (!channel) return;
+    const reason = prompt('Raison (optionnel) : ex. "tel pas enrole wero"', '') || '';
+    try {
+      await API.post('/api/paiement-failure', {
+        date, artiste: artistName, hubspot_id: hubspotId || null,
+        channel: channel.trim().toLowerCase(), reason: reason.trim(),
+      });
+      toast(`Echec signale : ${artistName} (${channel})`);
+      // Reload paiements to show the failure badge
+      const p = await API.get(`/api/paiements?date=${date}`, true);
+      state.paiements = p;
+      renderPaiements();
+    } catch (err) {
+      toast('Erreur lors du signalement', 'error');
+      console.error(err);
+    }
   }
 
   function paiementCard(a, closed, allPaid, isAdmin) {
     const frozen = closed && allPaid;
     const modeInfo = getPaiementModeInfo(a);
 
-    let actionsHtml = '';
-    if (!frozen) {
-      // Action button (deep link or copy)
-      if (modeInfo.actionUrl) {
-        actionsHtml += `<a href="${modeInfo.actionUrl}" target="_blank" rel="noopener" class="paiement-btn ${modeInfo.btnClass}" onclick="event.stopPropagation()">${modeInfo.actionLabel}</a>`;
-      }
-      if (modeInfo.copyValue) {
-        actionsHtml += `<button class="paiement-btn btn-copy-id" data-copy="${escapeAttr(modeInfo.copyValue)}">${modeInfo.copyLabel}</button>`;
-      }
-      // Toggle button
-      if (isAdmin) {
-        actionsHtml += `<button class="paiement-toggle ${a.paye ? 'paiement-toggle-paid' : 'paiement-toggle-pending'}" data-artist="${escapeAttr(a.name)}">${a.paye ? 'Paye' : 'A payer'}</button>`;
-      }
+    // Render alternatives (stacked vertically)
+    const altsHtml = modeInfo.alternatives.map(alt => {
+      const copyBtn = alt.copyValue
+        ? `<button class="paiement-alt-btn btn-copy-id" data-copy="${escapeAttr(alt.copyValue)}">${alt.copyLabel || 'Copier'}</button>`
+        : '';
+      const linkBtn = alt.actionUrl
+        ? `<a href="${alt.actionUrl}" target="_blank" rel="noopener" class="paiement-alt-btn paiement-alt-link" onclick="event.stopPropagation()">${alt.actionLabel || 'Ouvrir'}</a>`
+        : '';
+      return `
+        <div class="paiement-alt-row">
+          <span class="paiement-alt-display">${alt.display || '—'}</span>
+          ${linkBtn}${copyBtn}
+        </div>`;
+    }).join('');
+
+    // Failure badge (if any failure was signaled for this artist)
+    const failureBadge = (a.failures && a.failures.length > 0)
+      ? `<div class="paiement-failure-badge">\u26A0 echec signale : ${a.failures.map(f => escapeAttr(f.channel)).join(', ')}</div>`
+      : '';
+
+    // Action buttons row
+    let toggleBtn = '';
+    let failureBtn = '';
+    if (!frozen && isAdmin) {
+      toggleBtn = `<button class="paiement-toggle ${a.paye ? 'paiement-toggle-paid' : 'paiement-toggle-pending'}" data-artist="${escapeAttr(a.name)}">${a.paye ? 'Paye' : 'A payer'}</button>`;
+      failureBtn = `<button class="paiement-failure-btn" data-artist="${escapeAttr(a.name)}" data-hid="${escapeAttr(a.hubspot_id || '')}" title="Signaler un echec de paiement">\u26A0</button>`;
     }
 
     return `
@@ -788,56 +834,136 @@ const App = (() => {
         <div class="paiement-row-mode">
           <span class="paiement-mode-icon">${modeInfo.icon}</span>
           <span class="paiement-mode-label">${modeInfo.label}</span>
-          <span class="paiement-identifier">${modeInfo.identifier}</span>
         </div>
+        <div class="paiement-alternatives">
+          ${altsHtml || '<div class="paiement-alt-row paiement-alt-empty">Aucun identifiant — mettre a jour HubSpot</div>'}
+        </div>
+        ${failureBadge}
         <div class="paiement-row-actions">
-          ${actionsHtml}
-          ${a.date_paiement ? `<span style="font-size:0.75rem;color:var(--text-muted)">${a.date_paiement}</span>` : ''}
+          ${toggleBtn}
+          ${failureBtn}
+          ${a.date_paiement ? `<span class="paiement-date">${a.date_paiement}</span>` : ''}
         </div>
       </div>
     `;
   }
 
+  // Parse a Lydia identifier string :
+  //   "0659278971 (victor sur lydia)" -> {phone: "0659278971", username: "victor"}
+  //   "lydia.me/victor" -> {username: "victor"}
+  //   "0659278971" -> {phone: "0659278971"}
+  function parseLydiaIdentifier(raw) {
+    if (!raw) return {};
+    const out = {};
+    const s = String(raw).trim();
+    const mUser = s.match(/lydia\.me\/([\w.-]+)/i)
+      || s.match(/\(([^)]+?)\s+sur\s+lydia\)/i)
+      || s.match(/\(([\w.-]+)\s*\)/);
+    if (mUser) out.username = mUser[1].trim();
+    const mPhone = s.match(/(\+?33\d{9}|0\d{9})/);
+    if (mPhone) out.phone = mPhone[1];
+    return out;
+  }
+
+  // Build an alternative entry (used by Wero/Lydia/Virement/Unknown)
+  function buildAlt(type, value, label) {
+    if (!value) return null;
+    if (type === 'phone') {
+      return {
+        type, display: formatPhone(value),
+        copyValue: value, copyLabel: label || 'Copier tel',
+      };
+    }
+    if (type === 'email') {
+      return {
+        type, display: value,
+        copyValue: value, copyLabel: 'Copier email',
+      };
+    }
+    if (type === 'iban') {
+      const masked = value.length > 8 ? value.slice(0, 4) + ' **** ' + value.slice(-4) : value;
+      return {
+        type, display: masked,
+        copyValue: value, copyLabel: 'Copier IBAN',
+      };
+    }
+    if (type === 'lydia_link') {
+      return {
+        type, display: `lydia.me/${value}`,
+        actionUrl: `https://lydia.me/${value}`,
+        actionLabel: 'Ouvrir',
+        copyValue: `https://lydia.me/${value}`,
+        copyLabel: 'Copier lien',
+      };
+    }
+    if (type === 'name') {
+      return { type, display: value, copyValue: value, copyLabel: 'Copier nom' };
+    }
+    return null;
+  }
+
   function getPaiementModeInfo(a) {
     const mode = (a.mode || '').toLowerCase();
-    const phone = a.phone || a.identifiant_wero || '';
-    const lydia = a.identifiant_lydia || '';
-    const iban = a.iban || '';
+    const phone = a.phone;
+    const email = a.email;
+    const wero = a.identifiant_wero;
+    const lydia = a.identifiant_lydia;
+    const iban = a.iban;
+    const alternatives = [];
 
-    if (mode === 'wero' || (mode === '?' && a.identifiant_wero)) {
-      const num = a.identifiant_wero || phone;
-      const formatted = formatPhone(num);
+    // Normalize : treat non_renseigne / ? as no mode
+    const realMode = (mode === 'non_renseigne' || mode === '?' || mode === '') ? '' : mode;
+
+    if (realMode === 'wero') {
+      // Wero accepts phone AND email (since session 166 : Pierre's phone was KO)
+      const werorNum = wero || phone;
+      alternatives.push(buildAlt('phone', werorNum, 'Copier tel'));
+      // Add phone as second option only if it normalizes to a different number than wero
+      if (phone && normalizePhone(phone) !== normalizePhone(werorNum)) {
+        alternatives.push(buildAlt('phone', phone, 'Copier tel'));
+      }
+      // Email as alternative (Wero accepts email)
+      alternatives.push(buildAlt('email', email, 'Copier email'));
       return {
-        icon: '\uD83D\uDD35', label: 'Wero', identifier: formatted,
-        actionUrl: null, actionLabel: '',
-        copyValue: num, copyLabel: 'Copier tel',
-        btnClass: 'paiement-btn-wero',
+        icon: '\uD83D\uDD35', label: 'Wero',
+        alternatives: alternatives.filter(Boolean),
       };
     }
-    if (mode === 'lydia' || (mode === '?' && lydia)) {
-      const formatted = formatPhone(lydia);
+
+    if (realMode === 'lydia') {
+      const parsed = parseLydiaIdentifier(lydia);
+      // If a username was parsed, show lydia.me link first
+      if (parsed.username) {
+        alternatives.push(buildAlt('lydia_link', parsed.username));
+      }
+      // Phone (from parsed Lydia field OR contact phone)
+      const lydiaPhone = parsed.phone || (lydia && /^[\d+\s]+$/.test(lydia) ? lydia : null) || phone;
+      alternatives.push(buildAlt('phone', lydiaPhone, 'Copier tel'));
+      // Email fallback (Lydia accepts email too for account lookup)
+      alternatives.push(buildAlt('email', email, 'Copier email'));
       return {
-        icon: '\uD83D\uDFE3', label: 'Lydia', identifier: formatted,
-        actionUrl: null, actionLabel: '',
-        copyValue: lydia, copyLabel: 'Copier Lydia',
-        btnClass: 'paiement-btn-lydia',
+        icon: '\uD83D\uDFE3', label: 'Lydia',
+        alternatives: alternatives.filter(Boolean),
       };
     }
-    if (mode === 'rib' || mode === 'virement' || (mode === '?' && iban)) {
-      const masked = iban ? iban.slice(0, 4) + ' **** ' + iban.slice(-4) : '—';
+
+    if (realMode === 'rib' || realMode === 'virement') {
+      alternatives.push(buildAlt('iban', iban));
+      alternatives.push(buildAlt('name', a.name, 'Copier nom'));
+      // Email for confirmation
+      alternatives.push(buildAlt('email', email));
       return {
-        icon: '\uD83C\uDFE6', label: 'Virement', identifier: masked,
-        actionUrl: null, actionLabel: '',
-        copyValue: iban, copyLabel: 'Copier IBAN',
-        btnClass: '',
+        icon: '\uD83C\uDFE6', label: 'Virement',
+        alternatives: alternatives.filter(Boolean),
       };
     }
-    // Unknown mode — show contact
+
+    // Unknown / non renseigne mode — show contact options
+    alternatives.push(buildAlt('phone', phone, 'Copier tel'));
+    alternatives.push(buildAlt('email', email, 'Copier email'));
     return {
-      icon: '\u26A0\uFE0F', label: 'Non renseigne', identifier: formatPhone(phone) || '',
-      actionUrl: phone ? `tel:${phone}` : null, actionLabel: 'Appeler',
-      copyValue: phone || null, copyLabel: phone ? 'Copier tel' : '',
-      btnClass: 'paiement-btn-contact',
+      icon: '\u26A0\uFE0F', label: 'Mode non renseigne',
+      alternatives: alternatives.filter(Boolean),
     };
   }
 
@@ -853,6 +979,15 @@ const App = (() => {
       return clean.replace(/(\d{2})(?=\d)/g, '$1 ');
     }
     return clean;
+  }
+
+  // Normalize a phone to 10-digit local form for comparison (dedup).
+  // +33642154722 -> 0642154722, "06 42 15 47 22" -> 0642154722
+  function normalizePhone(num) {
+    if (!num) return '';
+    const digits = String(num).replace(/[^0-9]/g, '');
+    if (digits.startsWith('33') && digits.length === 11) return '0' + digits.slice(2);
+    return digits;
   }
 
   async function togglePaiement(artistName) {
