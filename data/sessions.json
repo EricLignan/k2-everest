@@ -90,166 +90,6 @@
       "paiements": []
     },
     {
-      "date": "2026-02-24",
-      "jour": "mardi",
-      "heure": "19h30",
-      "phase": "archive",
-      "artistes_count": 10,
-      "spectateurs": 18,
-      "chapeau": 45,
-      "parity_pct": 50,
-      "annulee": false,
-      "mc": null,
-      "notes": "Lineup 50% parite (3F/3H). Premiere session Comedy Club Everest.",
-      "lineup": [
-        {
-          "name": "Maxime Beaugendre",
-          "real_name": "Maxime Beaugendre",
-          "hubspot_id": "699417351391",
-          "instagram": "maxime_experimente",
-          "phone": "+33658527128",
-          "genre": "H",
-          "order": 1,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Alice Jacquot",
-          "real_name": "Alice Jacquot",
-          "hubspot_id": "699249495256",
-          "instagram": "alice.joue",
-          "phone": "+33612107382",
-          "genre": "F",
-          "order": 2,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Kévin Reeb",
-          "real_name": "Kevin Reeb",
-          "hubspot_id": "503369105643",
-          "instagram": "Kevin_reeb",
-          "phone": "+33630829429",
-          "genre": "H",
-          "order": 3,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Eddie CuDi",
-          "real_name": "Eddie CuDi",
-          "hubspot_id": "699255876831",
-          "instagram": "eddiecudi",
-          "phone": "+33623493590",
-          "genre": "H",
-          "order": 4,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Laura Mougenot",
-          "real_name": "Laura Mougenot",
-          "hubspot_id": "699583901914",
-          "instagram": "Laura_von_pepper",
-          "phone": "+33684212690",
-          "genre": "F",
-          "order": 5,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Pachna",
-          "real_name": "Pachna",
-          "hubspot_id": "699254588610",
-          "instagram": "pachna.m",
-          "phone": "+33784445194",
-          "genre": "F",
-          "order": 6,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Iris Drigé",
-          "real_name": "Iris Drigé",
-          "hubspot_id": "699248745660",
-          "instagram": "iris.drige",
-          "phone": "+33664615543",
-          "genre": "F",
-          "order": 7,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Doan",
-          "real_name": "Victor Salomon",
-          "hubspot_id": "699265113320",
-          "instagram": "do_doan_",
-          "phone": "+33659278971",
-          "genre": "H",
-          "order": 8,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Nathan Bel",
-          "real_name": "Nathan Bel",
-          "hubspot_id": "699271330026",
-          "instagram": "nathan_bel",
-          "phone": "+33644015020",
-          "genre": "H",
-          "order": 9,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        },
-        {
-          "name": "Anne Corté",
-          "real_name": "Anne Corte",
-          "hubspot_id": "700030193912",
-          "instagram": "Corte_culte",
-          "phone": "+33782320242",
-          "genre": "F",
-          "order": 10,
-          "status": "confirmed",
-          "is_mc": false,
-          "primo": true
-        }
-      ],
-      "remplacants": [
-        {
-          "name": "Laure Beauvois",
-          "hubspot_id": "699256881373",
-          "instagram": "Laure.beauvois",
-          "phone": "+33629037933",
-          "genre": "F",
-          "order": null,
-          "status": "replacement",
-          "is_mc": false,
-          "primo": false
-        },
-        {
-          "name": "Benjamin Fosca",
-          "hubspot_id": "699338535119",
-          "instagram": "Ben_fosca",
-          "phone": "+33676087411",
-          "genre": "H",
-          "order": null,
-          "status": "replacement",
-          "is_mc": false,
-          "primo": false
-        }
-      ],
-      "paiements": []
-    },
-    {
       "date": "2026-03-10",
       "jour": "mardi",
       "heure": "19h30",
@@ -296,7 +136,7 @@
           "order": 3,
           "status": "confirmed",
           "is_mc": false,
-          "primo": false
+          "primo": true
         },
         {
           "name": "JD",
@@ -542,7 +382,7 @@
           "order": 1,
           "status": "confirmed",
           "is_mc": false,
-          "primo": false
+          "primo": true
         },
         {
           "name": "Stéphane Dolbachian",
@@ -566,7 +406,7 @@
           "order": 3,
           "status": "confirmed",
           "is_mc": true,
-          "primo": false
+          "primo": true
         },
         {
           "name": "Maxime Farrayre",
@@ -1182,5 +1022,5 @@
       "paiements": []
     }
   ],
-  "generated": "2026-04-12T18:52:15.498671"
+  "generated": "2026-04-12T21:02:38.362560"
 }
